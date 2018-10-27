@@ -1,0 +1,84 @@
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+ 
+ 
+public class  denglu
+{
+  
+ 
+	public denglu(){
+		//加载图片
+		ImageIcon icon=new ImageIcon("C:\\Users\\User\\Desktop\\t1.jpg");
+		//Image im=new Image(icon);
+		//将图片放入label中
+		JLabel label=new JLabel(icon);
+		
+		//设置label的大小
+		label.setBounds(0,0,icon.getIconWidth(),icon.getIconHeight());
+		
+		JFrame frame=new JFrame();
+		
+		//获取窗口的第二层，将label放入
+		frame.getLayeredPane().add(label,new Integer(Integer.MIN_VALUE));
+			
+		//获取frame的顶层容器,并设置为透明
+		JPanel j=(JPanel)frame.getContentPane();
+		j.setOpaque(false);
+ 			
+				
+		JPanel panel=new JPanel();
+		
+        panel.setLayout(null);
+        
+		JTextField userNameTF=new JTextField(10);
+		userNameTF.setBounds(100,20,165,25);
+		
+		JTextField passwordTF=new JTextField(10);
+		passwordTF.setBounds(100,50,165,25);
+
+        JLabel userName = new JLabel("User Name:");
+        userName.setBounds(10,20,80,25);
+
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setBounds(10,50,80,25);
+        
+		JButton jb=new JButton("Log in");
+		jb.setBounds(10, 80, 80, 25);
+  
+		panel.setBounds(1354,450,300,700);
+		
+		panel.add(userName);
+		panel.add(userNameTF);
+        panel.add(passwordLabel);
+		panel.add(passwordTF);
+		panel.add(jb);
+        
+
+
+		//必须设置为透明的。否则看不到图片
+		panel.setOpaque(false);
+		
+		
+
+		frame.add(panel);
+		
+		frame.setLayout(null);
+
+		frame.setSize(icon.getIconWidth(),icon.getIconHeight());
+		frame.setVisible(true);
+ 
+		jb.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				Administrators admin = new Administrators();
+				admin.IsSon();
+			}
+			});
+
+	}
+	public static void main(String[] args) 
+	{
+		new denglu();
+	}
+}

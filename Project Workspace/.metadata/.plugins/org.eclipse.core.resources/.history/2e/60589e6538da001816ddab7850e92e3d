@@ -1,0 +1,6 @@
+
+public class Administrators{
+   public static void main(String s[]) {
+	   System.out.println("3")
+   }
+}

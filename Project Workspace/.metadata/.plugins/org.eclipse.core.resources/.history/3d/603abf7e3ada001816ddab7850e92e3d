@@ -1,0 +1,16 @@
+import javax.swing.ImageIcon;
+
+public class Administrators{
+	public void adminPage() {
+		ImageIcon icon=new ImageIcon("C:\\Users\\User\\Desktop\\t1.jpg");	
+	}
+	
+	
+	
+	
+	
+   public static void main(String s[]) {
+	   System.out.println("3");
+   }
+   
+}

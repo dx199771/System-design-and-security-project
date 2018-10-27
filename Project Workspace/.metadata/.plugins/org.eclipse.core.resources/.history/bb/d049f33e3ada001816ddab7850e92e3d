@@ -1,0 +1,10 @@
+
+public class Administrators{
+	public void IsSon() {
+		   System.out.println("3");
+	}
+   public static void main(String s[]) {
+	   System.out.println("3");
+   }
+   
+}
