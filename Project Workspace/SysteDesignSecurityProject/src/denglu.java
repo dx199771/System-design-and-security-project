@@ -73,6 +73,7 @@ public class  denglu
 				
 				Administrators admin = new Administrators();
 				admin.adminPage();
+				frame.dispose();
 			}
 			});
 
