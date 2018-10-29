@@ -20,7 +20,70 @@ public class Administrators{
 		JPanel j=(JPanel)frame.getContentPane();
 		j.setOpaque(false);
 
+		profile(frame);
 		
+		JPanel nav =new JPanel();
+		nav.setLayout(new GridLayout(5,1));
+		nav.setBounds(0,146, 343, 788);
+		nav.setOpaque(false);
+		
+		
+		JButton profile=new JButton("profile");
+		JButton accounts=new JButton("accounts");
+		JButton departments=new JButton("departments");
+		JButton degree=new JButton("degree");
+		JButton modules=new JButton("modules");
+		
+		
+		profile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				frame.dispose();
+			}
+			});
+		accounts.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				departments(frame);
+			}
+			});
+		departments.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				frame.dispose();
+			}
+			});
+		degree.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				frame.dispose();
+			}
+			});
+		modules.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				frame.dispose();
+			}
+			});
+
+		
+		nav.add(profile);
+		nav.add(accounts);
+		nav.add(departments);
+		nav.add(degree);
+		nav.add(modules);
+
+		
+		frame.add(nav);
+		frame.setLayout(null);
+
+		frame.setSize(icon.getIconWidth(),icon.getIconHeight());
+		frame.setVisible(true);
+ 
+		
+	}
+	
+
+	public void profile(JFrame frame) {
 		JPanel main =new JPanel();
 		main.setLayout(new GridLayout(3,1));
 		main.setBounds(343,146, 1577, 788);
@@ -34,37 +97,22 @@ public class Administrators{
 		welcome2.setFont(new java.awt.Font("Dialog", 1, 40));
 
 		
-		
-		
 		main.add(welcome);
 		main.add(welcome2);
-
-		JPanel nav =new JPanel();
-		nav.setLayout(new GridLayout(5,1));
-		nav.setBounds(0,146, 343, 788);
-		nav.setOpaque(false);
-		
-		
-		JButton profile=new JButton("profile");
-		JButton accounts=new JButton("accounts");
-		JButton departments=new JButton("departments");
-		JButton degree=new JButton("degree");
-		JButton modules=new JButton("modules");
-		
-		nav.add(profile);
-		nav.add(accounts);
-		nav.add(departments);
-		nav.add(degree);
-		nav.add(modules);
-
-		
 		frame.add(main);
-		frame.add(nav);
-		frame.setLayout(null);
 
-		frame.setSize(icon.getIconWidth(),icon.getIconHeight());
-		frame.setVisible(true);
- 
-		
-	}   
+	}
+	public void departments(JFrame frame) {
+		JPanel departments =new JPanel();
+		departments.setLayout(new GridLayout(3,1));
+		departments.setBounds(343,146, 1577, 788);
+		departments.setOpaque(false);
+
+		JLabel welcome3 =new JLabel("Welcome to information system..."); 
+		welcome3.setFont(new java.awt.Font("Dialog", 1, 40));
+
+		departments.add(welcome3);
+		frame.add(departments);
+
+	}
 }
