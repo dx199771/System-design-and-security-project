@@ -1,0 +1,27 @@
+import java.sql.*;
+import java.util.*;
+
+public class FindDrivers {
+  public static void main(String[] args) throws Exception {
+	  Statement stmt = null;
+	  Connection con = null;  // a Connection object
+	  try {
+	    con = DriverManager.getConnection(
+	    		"jdbc:mysql://stusql.dcs.shef.ac.uk/team031", "team031", "4934b78c"); 
+	    stmt = con.createStatement();
+		stmt.executeUpdate(
+				  "CREATE TABLE IF NOT EXISTS `teacher2` (`teach_id` INT NOT NULL)"
+				  );
+		PreparedStatement pstmt = con.prepareStatement("INSERT INTO `teacher2` VALUES (1)");
+		ResultSet ResultSet =stmt.executeQuery("SELECT * FROM `teacher2`");
+		res.close();
+		System.out.print(ResultSet);
+	  }
+	  catch (SQLException ex) {    
+		  ex.printStackTrace();
+	  }
+	  finally {  
+		  if (con != null) con.close();
+	  }
+  }
+}

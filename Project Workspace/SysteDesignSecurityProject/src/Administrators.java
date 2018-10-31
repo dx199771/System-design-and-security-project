@@ -5,7 +5,8 @@ import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
- 
+import javax.swing.JTable;
+
 public class Administrators{
 	public void adminPage() {
 		ImageIcon icon=new ImageIcon("C:\\Users\\User\\Desktop\\admin.jpg");
@@ -20,7 +21,7 @@ public class Administrators{
 		JPanel j=(JPanel)frame.getContentPane();
 		j.setOpaque(false);
 
-		profile(frame);
+		accounts(frame);
 		
 		JPanel nav =new JPanel();
 		nav.setLayout(new GridLayout(5,1));
@@ -29,6 +30,12 @@ public class Administrators{
 		
 		
 		JButton profile=new JButton("profile");
+		profile.setPreferredSize(new Dimension(80,30));
+		profile.setContentAreaFilled(false);
+		profile.setBorderPainted(false);
+		//profile.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\pb.png"));		
+		profile.setBorder(BorderFactory.createRaisedBevelBorder());
+		
 		JButton accounts=new JButton("accounts");
 		JButton departments=new JButton("departments");
 		JButton degree=new JButton("degree");
@@ -37,14 +44,14 @@ public class Administrators{
 		
 		profile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				frame.dispose();
+
+				profile(frame);
 			}
 			});
 		accounts.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				departments(frame);
-			}
+				accounts(frame);
+				}
 			});
 		departments.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -103,16 +110,39 @@ public class Administrators{
 
 	}
 	public void departments(JFrame frame) {
-		JPanel departments =new JPanel();
-		departments.setLayout(new GridLayout(3,1));
-		departments.setBounds(343,146, 1577, 788);
-		departments.setOpaque(false);
-
-		JLabel welcome3 =new JLabel("Welcome to information system..."); 
-		welcome3.setFont(new java.awt.Font("Dialog", 1, 40));
-
-		departments.add(welcome3);
-		frame.add(departments);
+		JPanel accounts = new JPanel(); 
+		  Object[][] playerInfo = {
+				  { "王鹏", new Integer(91), new Integer(100), new Integer(191), new Boolean(true) }, 
+				  { "朱学莲", new Integer(82), new Integer(69), new Integer(151), new Boolean(true) }, 
+				  { "梅婷", new Integer(47), new Integer(57), new Integer(104), new Boolean(false) }, 
+				  { "赵龙", new Integer(61), new Integer(57), new Integer(118), new Boolean(false) }, 
+				  { "李兵", new Integer(90), new Integer(87), new Integer(177), new Boolean(true) }, }; 
+		  String[] Names = { "姓名", "语文", "数学", "总分", "及格" }; 
+		  JTable table = new JTable(playerInfo, Names); 
+		  table.setPreferredScrollableViewportSize(new Dimension(550, 100)); 
+		  JScrollPane scrollPane = new JScrollPane(table); 
+		  accounts.setVisible(true); 
 
 	}
+	public void accounts(JFrame frame) {
+
+		JPanel accounts = new JPanel(); 
+		accounts.setBounds(343,146, 1577, 788);
+
+		Object[][] playerInfo = {
+				{ "王鹏", new Integer(91), new Integer(100), new Integer(191), new Boolean(true) }, 
+				{ "朱学莲", new Integer(82), new Integer(69), new Integer(151), new Boolean(true) }, 
+				{ "梅婷", new Integer(47), new Integer(57), new Integer(104), new Boolean(false) }, 
+				{ "赵龙", new Integer(61), new Integer(57), new Integer(118), new Boolean(false) }, 
+				{ "李兵", new Integer(90), new Integer(87), new Integer(177), new Boolean(true) }, }; 
+		String[] Names = { "姓名", "语文", "数学", "总分", "及格" }; 
+		JTable table = new JTable(playerInfo, Names); 
+		table.setPreferredScrollableViewportSize(new Dimension(550, 100)); 
+		JScrollPane scrollPane = new JScrollPane(table); 
+	    accounts.setVisible(true); 
+	    accounts.add(table);
+		frame.add(accounts);
+				
+	}
+
 }

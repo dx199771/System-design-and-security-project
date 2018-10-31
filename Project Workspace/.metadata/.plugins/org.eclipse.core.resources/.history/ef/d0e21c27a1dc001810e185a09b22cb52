@@ -1,0 +1,31 @@
+import java.sql.*;
+import java.util.*;
+
+public class FindDrivers {
+  public static void main(String[] args) throws Exception {
+	  Statement stmt = null;
+	  Connection con = null;  // a Connection object
+	  try {
+	    con = DriverManager.getConnection(
+	    		"jdbc:mysql://stusql.dcs.shef.ac.uk/team031", "team031", "4934b78c"); 
+	    stmt = con.createStatement();
+		int count = stmt.executeUpdate(
+				  "CREATE TABLE IF NOT EXISTS `runoob_tbl`(\r\n" + 
+				  "   `runoob_id` INT UNSIGNED AUTO_INCREMENT,\r\n" + 
+				  "   `runoob_title` VARCHAR(100) NOT NULL,\r\n" + 
+				  "   `runoob_author` VARCHAR(40) NOT NULL,\r\n" + 
+				  "   `submission_date` DATE,\r\n" + 
+				  "   PRIMARY KEY ( `runoob_id` )\r\n" + 
+				  ")");
+		PreparedStatement pstmt = con.prepareStatement("INSERT INTO `runoob_tbl` VALUES (1, a, a,10/31/2018)");
+
+		System.out.print(stmt.executeQuery("SELECT * FROM `runoob_tbl`"));
+	  }
+	  catch (SQLException ex) {    
+		  ex.printStackTrace();
+	  }
+	  finally {  
+		  if (con != null) con.close();
+	  }
+  }
+}

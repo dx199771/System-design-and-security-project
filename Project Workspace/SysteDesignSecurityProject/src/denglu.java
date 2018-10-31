@@ -2,10 +2,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
  
- 
 public class  denglu
 {
-  
  
 	public denglu(){
 		//加载图片
@@ -31,30 +29,32 @@ public class  denglu
 		
         panel.setLayout(null);
         
-		JTextField userNameTF=new JTextField(10);
-		userNameTF.setBounds(100,20,165,25);
-		
-		JTextField passwordTF=new JTextField(10);
-		passwordTF.setBounds(100,50,165,25);
-
-        JLabel userName = new JLabel("User Name:");
-        userName.setBounds(10,20,80,25);
-
-        JLabel passwordLabel = new JLabel("Password:");
-        passwordLabel.setBounds(10,50,80,25);
         
-		JButton jb=new JButton("Log in");
-		jb.setBounds(10, 80, 80, 25);
-  
+        JLabel usernameIcon = new JLabel(new ImageIcon("C:\\Users\\User\\Desktop\\username.jpg"));
+        usernameIcon.setBounds(40,20,150,40);
+
+		JTextField userNameTF=new JTextField(10);
+		userNameTF.setBounds(80,20,200,40);
+		//userNameTF.setPlaceholder = @"User name";
+        JLabel passwordIcon = new JLabel(new ImageIcon("C:\\Users\\User\\Desktop\\password.jpg"));
+        passwordIcon.setBounds(40,70,150,40);
+
+		JTextField passwordTF=new JTextField(10);
+		passwordTF.setBounds(80,70,200,40);
+
+        
+		JButton jb=new JButton("Log In");
+		jb.setBackground(new Color(51,153,255));
+		jb.setBounds(40, 140, 240, 40);
+		jb.setForeground(Color.WHITE);
+		jb.setFont(new Font("宋体", Font.PLAIN, 16));
 		panel.setBounds(1354,450,300,700);
 		
-		panel.add(userName);
 		panel.add(userNameTF);
-        panel.add(passwordLabel);
 		panel.add(passwordTF);
 		panel.add(jb);
-        
-
+		panel.add(usernameIcon);
+		panel.add(passwordIcon);
 
 		//必须设置为透明的。否则看不到图片
 		panel.setOpaque(false);
