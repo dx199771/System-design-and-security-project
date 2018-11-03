@@ -7,7 +7,7 @@ public class  denglu
  
 	public denglu(){
 		//加载图片
-		ImageIcon icon=new ImageIcon("C:\\Users\\User\\Desktop\\t1.jpg");
+		ImageIcon icon=new ImageIcon("src\\images\\t1.jpg");
 		//Image im=new Image(icon);
 		//将图片放入label中
 		JLabel label=new JLabel(icon);
@@ -30,16 +30,16 @@ public class  denglu
         panel.setLayout(null);
         
         
-        JLabel usernameIcon = new JLabel(new ImageIcon("C:\\Users\\User\\Desktop\\username.jpg"));
+        JLabel usernameIcon = new JLabel(new ImageIcon("src\\images\\username.jpg"));
         usernameIcon.setBounds(40,20,150,40);
 
 		JTextField userNameTF=new JTextField(10);
 		userNameTF.setBounds(80,20,200,40);
 		//userNameTF.setPlaceholder = @"User name";
-        JLabel passwordIcon = new JLabel(new ImageIcon("C:\\Users\\User\\Desktop\\password.jpg"));
+        JLabel passwordIcon = new JLabel(new ImageIcon("src\\images\\password.jpg"));
         passwordIcon.setBounds(40,70,150,40);
 
-		JTextField passwordTF=new JTextField(10);
+        JPasswordField passwordTF=new JPasswordField(10);
 		passwordTF.setBounds(80,70,200,40);
 
         
