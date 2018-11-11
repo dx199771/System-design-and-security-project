@@ -70,10 +70,15 @@ public class  denglu
  
 		jb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				Administrators admin = new Administrators();
-				admin.adminPage();
-				frame.dispose();
+				String user = "3";
+				String pass = "3";
+						
+				if(user.equals(userNameTF.getText()) && pass.equals(passwordTF.getText())) {
+					Administrators admin = new Administrators();
+					admin.adminPage();
+					frame.dispose();
+			
+				}
 			}
 			});
 

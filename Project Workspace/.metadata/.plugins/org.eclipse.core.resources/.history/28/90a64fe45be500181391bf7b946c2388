@@ -1,0 +1,78 @@
+import java.sql.*;
+import java.util.*;
+
+public class FindDrivers {
+  public static void main(String[] args) throws Exception {
+	  Statement stmt = null;
+	  Connection con = null;  // a Connection object
+	  try {
+	    con = DriverManager.getConnection(
+	    		"jdbc:mysql://stusql.dcs.shef.ac.uk/team031", "team031", "4934b78c"); 
+	    
+	    stmt = con.createStatement();
+	    
+	    
+	    //database build
+		stmt.executeUpdate(
+				  "CREATE TABLE if not exists `Accounts` (" + 
+				  "  `Username` varchar(10) NOT NULL," + 
+				  "  `Password` varchar(20) NOT NULL," + 
+				  "  `Privileges` varchar(15) NOT NULL," + 
+				  "  PRIMARY KEY (`Username`)" + 
+				  ") "
+				  );
+		stmt.executeUpdate(
+				  "CREATE TABLE if not exists `Departments` (" + 
+				  "  `Full name` varchar(20) NOT NULL," + 
+				  "  `Abbreviated code` varchar(10) NOT NULL," + 
+				  "  `Degree` varchar(255) NOT NULL," + 
+				  "  PRIMARY KEY (`Full name`,`Abbreviated code`)" + 
+				  ") "
+				  );
+		stmt.executeUpdate(
+				  "CREATE TABLE if not exists `Degrees` (" + 
+				  "  `Full name` varchar(20) NOT NULL," + 
+				  "  `Abbreviated code` varchar(10) NOT NULL," + 
+				  "  `Lead department` varchar(255) NOT NULL," + 
+				  "  `Levels of study` varchar(1) NOT NULL," +
+				  "  `Modules` varchar(10) NOT NULL," +
+				  "  PRIMARY KEY (`Full name`,`Abbreviated code`)" + 
+				  ") "
+				  );
+		stmt.executeUpdate(
+				  "CREATE TABLE if not exists `Modules` (" + 
+				  "  `Full name` varchar(20) NOT NULL," + 
+				  "  `Abbreviated code` varchar(10) NOT NULL," + 
+				  "  `Lead department` varchar(255) NOT NULL," + 
+				  "  `Levels of study` varchar(1) NOT NULL," + 
+				  "  PRIMARY KEY (`Full name`,`Abbreviated code`)" + 
+				  ") "
+				  );
+		//database insert test
+		//account insert test
+		String insertAccounts="INSERT INTO `Accounts` VALUES ('3', '3', 'Administrators');";
+		stmt.executeUpdate(insertAccounts);
+		//departments insert test
+		String insertDepartments="INSERT INTO `Department` VALUES ('Computer Science', 'COM', 'test');";
+		stmt.executeUpdate(insertAccounts);
+		
+		
+		
+        DatabaseMetaData md = con.getMetaData();
+        ResultSet rs = md.getTables(null, null, "%", null);
+        while (rs.next()) {
+        	System.out.println(rs.getString(3));
+        }
+	    rs.close();
+
+	    stmt.close();
+
+	  }
+	  catch (SQLException ex) {    
+		  ex.printStackTrace();
+	  }
+	  finally {  
+		  if (con != null) con.close();
+	  }
+  }
+}
