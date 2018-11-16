@@ -1,10 +1,10 @@
 import java.sql.*;
-import java.util.*;
 
 public class FindDrivers {
+	Statement stmt = null;
+	Connection con = null;  // a Connection object
   public Statement Drivers() throws Exception {
-	  Statement stmt = null;
-	  Connection con = null;  // a Connection object
+	  
 	  try {
 	    con = DriverManager.getConnection(
 	    		"jdbc:mysql://stusql.dcs.shef.ac.uk/team031", "team031", "4934b78c"); 
@@ -56,7 +56,7 @@ public class FindDrivers {
 		departments insert test
 		String insertDepartments="INSERT INTO `Departments` VALUES ('Computer Science', 'COM', 'test');";
 		stmt.executeUpdate(insertDepartments);
-		String insertDepartments2="INSERT INTO `Departments` VALUES ('Mangement School', 'MGT', 'test');";
+		String insertDepartment++s2="INSERT INTO `Departments` VALUES ('Mangement School', 'MGT', 'test');";
 		stmt.executeUpdate(insertDepartments2);
 		departments insert test
 		String insertDegrees="INSERT INTO `Degrees` VALUES ('MEng Software Engineering', 'COMU03', 'Computer Science', '4', 'test');";
@@ -90,28 +90,6 @@ public class FindDrivers {
 	  }
 	return stmt;
   }
-	public int getRow(String tableName) throws Exception {
-		int row = 0;
-		try {
-			ResultSet rs = Drivers().executeQuery("select*from "+tableName);
-			ResultSetMetaData rsmd = rs.getMetaData();
-			row = rsmd.getRowCount();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		return row;
-	}
-	public int getCol(String tableName) throws Exception {
-		int col = 0;
-		try {
-			ResultSet rs = Drivers().executeQuery("select*from "+tableName);
-			ResultSetMetaData rsmd = rs.getMetaData();
-			col = rsmd.getColumnCount();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-		return col;
-	}
+
+
 }

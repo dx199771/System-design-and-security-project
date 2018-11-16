@@ -4,13 +4,30 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Vector;
+import java.sql.*;
 import javax.swing.*;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import com.mysql.cj.jdbc.result.ResultSetMetaData;
+
 public class Administrators{
 	FindDrivers fd = new FindDrivers();
+	Statement stmt = null;
+	Connection con = null;  // a Connection object
+	public void  Drivers() throws Exception {  
+		try {
+		con = DriverManager.getConnection(
+			"jdbc:mysql://stusql.dcs.shef.ac.uk/team031", "team031", "4934b78c"); 
+		    
+		    stmt = con.createStatement();
 
+		  }
+		  catch (SQLException ex) {    
+			  ex.printStackTrace();
+		  }
+	  }	
 	public void adminPage() {
 		ImageIcon icon=new ImageIcon("src\\images\\admin.jpg");
 		JLabel label=new JLabel(icon);
@@ -71,7 +88,12 @@ public class Administrators{
 		departments.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			updateJSwing(main);
-			departments(main,frame);
+			try {
+				departments(main,frame);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		});
 		degree.addActionListener(new ActionListener() {
@@ -134,19 +156,55 @@ public class Administrators{
 		main.add(welcome);
 		main.add(welcome2);
 	}
+	
+	private Vector getNextRow(ResultSet rs,ResultSetMetaData rsmd) throws SQLException{
+	Vector currentRow=new Vector();
+	for(int i=1;i<=rsmd.getColumnCount();i++){
+		currentRow.addElement(rs.getString(i));
+	}
+	return currentRow;
+	}
+	
 	public void accounts(JPanel main,JFrame frame) throws Exception {
+		ResultSet accountsRs;
 		main.setBounds(343,146, 1577, 788);
 		
 		
-		DefaultTableModel tableModel = new DefaultTableModel(4,4);	
-		JTable table = new JTable(tableModel);
+		//
+		Drivers();
+		String sql ="select * from Accounts";
+		accountsRs = stmt.executeQuery(sql);
+		if(!(accountsRs.next()))
+		{
+		   JOptionPane.showMessageDialog(null, "结果集中无记录", "无记录",JOptionPane.INFORMATION_MESSAGE);
+		}
+		ResultSetMetaData rsmd= (ResultSetMetaData) accountsRs.getMetaData();
+		Vector rows = new Vector();
+		Vector columnHeads=new Vector();	
 		
+		for(int i=1;i<=rsmd.getColumnCount();i++)
+		{
+		    columnHeads.addElement(rsmd.getColumnName(i));//添加列名
+		}
+		do{
+		     rows.addElement(getNextRow(accountsRs,rsmd));//添加表行值
+		}while(accountsRs.next());
+			JTable table = new JTable(rows,columnHeads);	
+			table.setSize(new Dimension(1577, 788));//设置表的大小
+			accountsRs.close();		
+	    stmt.close();
+		con.close();
+	    //
+	    
+	    
+	    
+		main.setVisible(true); 
+
 		JButton addAccounts= new JButton("Add account");
 		addAccounts.setBounds(0,738, 200, 50);
-		System.out.print(fd.getRow("Accounts"));
-		
-		main.add(table);
 		main.add(addAccounts);
+
+		main.add(table);
 		
 		addAccounts.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -185,21 +243,36 @@ public class Administrators{
 		    }
 		});
 	}
-	public void departments(JPanel main,JFrame frame) {
+	public void departments(JPanel main,JFrame frame) throws Exception {
 		main.setBounds(343,146, 1577, 788);
-		Object[][] playerInfo = {
-				{ "王鹏", new Integer(91), new Integer(100), new Integer(191), new Boolean(true) }, 
-				{ "朱学莲", new Integer(82), new Integer(69), new Integer(151), new Boolean(true) }, 
-				{ "梅", new Integer(47), new Integer(57), new Integer(104), new Boolean(false) }, 
-				{ "赵龙", new Integer(61), new Integer(57), new Integer(118), new Boolean(false) }, 
-				{ "李兵", new Integer(90), new Integer(87), new Integer(177), new Boolean(true) }, }; 
-		String[] Names = { "姓", "语文", "数学", "总分", "及格" }; 
-		JTable table = new JTable(playerInfo, Names); 
 		
-		table.setPreferredScrollableViewportSize(new Dimension(550, 100)); 
-		table.setBounds(0,0,1577,738);
-
-		JScrollPane scrollPane = new JScrollPane(table); 
+		
+		ResultSet departmentsRs;
+		Drivers();
+		String sql ="select * from Departments";
+		departmentsRs = stmt.executeQuery(sql);
+		if(!(departmentsRs.next()))
+		{
+		   JOptionPane.showMessageDialog(null, "结果集中无记录", "无记录",JOptionPane.INFORMATION_MESSAGE);
+		}
+		ResultSetMetaData rsmd= (ResultSetMetaData) departmentsRs.getMetaData();
+		Vector rows = new Vector();
+		Vector columnHeads=new Vector();	
+		
+		for(int i=1;i<=rsmd.getColumnCount();i++)
+		{
+		    columnHeads.addElement(rsmd.getColumnName(i));//添加列名
+		}
+		do{
+		     rows.addElement(getNextRow(departmentsRs,rsmd));//添加表行值
+		}while(departmentsRs.next());
+			JTable table = new JTable(rows,columnHeads);	
+			table.setSize(new Dimension(1577, 788));//设置表的大小
+			departmentsRs.close();		
+	    stmt.close();
+		con.close();
+				
+		
 		main.setVisible(true); 
 		  
 		JButton addDepartment= new JButton("Add department");
