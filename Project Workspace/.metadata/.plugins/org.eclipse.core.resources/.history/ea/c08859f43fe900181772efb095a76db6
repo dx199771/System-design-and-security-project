@@ -1,9 +1,15 @@
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
 import java.sql.*;
+import javax.swing.*;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
 import com.mysql.cj.jdbc.result.ResultSetMetaData;
 
 public class Administrators{
@@ -387,7 +393,7 @@ public class Administrators{
 		main.setBounds(343,146, 1577, 788);
 		ResultSet modulesRs;
 		Drivers();
-		String sql ="select * from Modules";
+		String sql ="select * from Degrees";
 		modulesRs = stmt.executeQuery(sql);
 		if(!(modulesRs.next()))
 		{
