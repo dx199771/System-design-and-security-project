@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
 import java.sql.*;
-import javax.swing.JTable;
+
 import com.mysql.cj.jdbc.result.ResultSetMetaData;
 
 public class Administrators{
@@ -193,8 +193,15 @@ public class Administrators{
 		do{
 		     rows.addElement(getNextRow(accountsRs,rsmd));//添加表行值
 		}while(accountsRs.next());
+		
+		JButton remove = new JButton("remove");
+		columnHeads.addElement("remove");
+				
+
+		
+		
 			JTable table = new JTable(rows,columnHeads);	
-			table.setSize(new Dimension(1577, 788));//设置表的大小
+			table.setSize(new Dimension(1577, 788));//设置表的大小 
 			accountsRs.close();		
 	    stmt.close();
 		con.close();

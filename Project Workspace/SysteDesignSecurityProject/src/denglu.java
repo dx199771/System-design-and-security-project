@@ -72,10 +72,18 @@ public class  denglu
 			public void actionPerformed(ActionEvent e) {
 				String user = "3";
 				String pass = "3";
-						
+				String user1 = "4";
+				String pass1 = "4";
+							
 				if(user.equals(userNameTF.getText()) && pass.equals(passwordTF.getText())) {
 					Administrators admin = new Administrators();
 					admin.adminPage();
+					frame.dispose();
+			
+				}
+				if(user1.equals(userNameTF.getText()) && pass1.equals(passwordTF.getText())) {
+					Registrars reg = new Registrars();
+					reg.registarPage();
 					frame.dispose();
 			
 				}
