@@ -235,22 +235,64 @@ public class Administrators{
 		    password.setBounds(30, 70, 100, 20);
 		    JTextField password1 = new JTextField();
 		    password1.setBounds(140, 70, 100, 20);
+		    JLabel Privileges = new JLabel("Privileges:");
+		    Privileges.setBounds(30, 100, 100, 20);
+		    
+		    
+			JComboBox PrivilegesBox=new JComboBox();
+			PrivilegesBox.addItem("Administrators");
+			PrivilegesBox.addItem("Registrars");
+			PrivilegesBox.addItem("Teachers");
+			PrivilegesBox.addItem("Students");
+			PrivilegesBox.setBounds(140, 100, 100, 20);
+
+			
 		    JButton okbtn = new JButton("Confirm");
-		    okbtn.setBounds(30, 120, 80, 20);
+		    okbtn.setBounds(30, 140, 80, 20);
 		    JButton cancelbtn = new JButton("Cancel");
-		    cancelbtn.setBounds(160, 120, 80, 20);
+		    cancelbtn.setBounds(160, 140, 80, 20);
 
 		    addAccountP.add(accName);
 		    addAccountP.add(accName1);
 		    addAccountP.add(password);
 		    addAccountP.add(password1);
+		    addAccountP.add(Privileges);
+		    addAccountP.add(PrivilegesBox);
 		    addAccountP.add(okbtn);
 		    addAccountP.add(cancelbtn);
 		    addAccount.setLocation(900,500);
-		    addAccount.setSize(300,220);
+		    addAccount.setSize(290,220);
 		    addAccount.setVisible(true);
 			addAccount.add(addAccountP);
+			okbtn.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+				try {
+					Drivers();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 
+				String accName = accName1.getText();
+			    String password = password1.getText();
+				String insertAccounts="INSERT INTO `Accounts` VALUES ("+accName+","+password+",'Administrators');";
+
+				try {
+					stmt.executeUpdate(insertAccounts);
+					System.out.println("Success");
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+					stmt.close();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				addAccount.dispose();
+				}
+			});
 		    }
 		});
 	}
@@ -317,10 +359,10 @@ public class Administrators{
 			    addDepartmentP.add(okbtn);
 			    addDepartmentP.add(cancelbtn);
 			    addDepartment.setLocation(900,500);
-			    addDepartment.setSize(300,220);
+			    addDepartment.setSize(290,220);
 			    addDepartment.setVisible(true);
 			    addDepartment.add(addDepartmentP);
-
+			    
 			    }
 			});
 	}
@@ -383,7 +425,7 @@ public class Administrators{
 			    addDegreeP.add(okbtn);
 			    addDegreeP.add(cancelbtn);
 			    addDegree.setLocation(900,500);
-			    addDegree.setSize(300,220);
+			    addDegree.setSize(290,220);
 			    addDegree.setVisible(true);
 			    addDegree.add(addDegreeP);
 
@@ -449,7 +491,7 @@ public class Administrators{
 			    addModulesP.add(okbtn);
 			    addModulesP.add(cancelbtn);
 			    addModules.setLocation(900,500);
-			    addModules.setSize(300,220);
+			    addModules.setSize(290,220);
 			    addModules.setVisible(true);
 			    addModules.add(addModulesP);
 

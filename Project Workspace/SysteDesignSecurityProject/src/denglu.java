@@ -1,10 +1,29 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import javax.swing.*;
  
-public class  denglu
-{
- 
+public class  denglu{
+	FindDrivers fd = new FindDrivers();
+	Statement stmt = null;
+	Connection con = null;  // a Connection object
+	public void  Drivers() throws Exception {  
+		try {
+		con = DriverManager.getConnection(
+			"jdbc:mysql://stusql.dcs.shef.ac.uk/team031", "team031", "4934b78c"); 
+		    
+		    stmt = con.createStatement();
+
+		  }
+		  catch (SQLException ex) {    
+			  ex.printStackTrace();
+		  }
+	}	
 	public denglu(){
 		//º”‘ÿÕº∆¨
 		ImageIcon icon=new ImageIcon("src\\images\\t1.jpg");
@@ -70,22 +89,58 @@ public class  denglu
  
 		jb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String user = "3";
-				String pass = "3";
-				String user1 = "4";
-				String pass1 = "4";
-							
-				if(user.equals(userNameTF.getText()) && pass.equals(passwordTF.getText())) {
-					Administrators admin = new Administrators();
-					admin.adminPage();
-					frame.dispose();
-			
+				try {
+					Drivers();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
-				if(user1.equals(userNameTF.getText()) && pass1.equals(passwordTF.getText())) {
-					Registrars reg = new Registrars();
-					reg.registarPage();
-					frame.dispose();
-			
+				
+				
+				ResultSet rs = null;
+				ResultSet priv = null;
+
+				try {
+					rs = stmt.executeQuery("select `Privileges` from `Accounts` where `Username`='"+userNameTF.getText()+"' and `Password`='"+passwordTF.getText()+"'");
+
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				
+	            try {
+					if(rs.next()) {
+						if(rs.getString("Privileges").equals("Administrators")) {
+						Administrators admin = new Administrators();
+						admin.adminPage();
+						frame.dispose();
+						}
+						else if(rs.getString("Privileges").equals("Registrars")){
+					    System.out.print(rs.getString("Privileges"));
+					    Registrars regis = new Registrars();
+					    regis.registarPage();
+						frame.dispose();
+						}
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Invalid username or password", "Login failed",JOptionPane.WARNING_MESSAGE);  
+					}
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+	    	    try {
+					stmt.close();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+	    		try {
+					con.close();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
 			}
 			});
