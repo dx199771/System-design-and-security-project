@@ -1,0 +1,214 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.Vector;
+import java.sql.*;
+
+import com.mysql.cj.jdbc.result.ResultSetMetaData;
+
+public class Students {
+	FindDrivers fd = new FindDrivers();
+	Statement stmt = null;
+	Connection con = null;  // a Connection object
+	
+	public void  Drivers() throws Exception {  
+		try {
+		con = DriverManager.getConnection(
+			"jdbc:mysql://stusql.dcs.shef.ac.uk/team031", "team031", "4934b78c"); 
+		    
+		    stmt = con.createStatement();
+
+		  }
+		  catch (SQLException ex) {    
+			  ex.printStackTrace();
+		  }
+	}
+	public void studentPage() {
+		ImageIcon icon=new ImageIcon("src\\images\\admin.jpg");
+		JLabel label=new JLabel(icon);
+		label.setBounds(0,0,icon.getIconWidth(),icon.getIconHeight());
+		JFrame frame=new JFrame();
+		
+		//获取窗口的第二层，将label放入
+		frame.getLayeredPane().add(label,new Integer(Integer.MIN_VALUE));
+			
+		//获取frame的顶层容器,并设置为透明
+		JPanel j=(JPanel)frame.getContentPane();
+		j.setOpaque(false);
+
+		JPanel main =new JPanel();
+		profile(main,frame);
+		frame.add(main);
+
+		  
+		JPanel nav =new JPanel();
+		nav.setLayout(new GridLayout(5,1));
+		nav.setBounds(0,146, 343, 400);
+		nav.setOpaque(false);
+		
+		
+		JButton profile=new JButton("· Profile ·");
+		navAttribute(profile);
+		JButton status=new JButton("· Current Status ·");
+		navAttribute(status);
+
+		
+		
+		profile.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+				main.removeAll();
+				main.repaint();
+				main.updateUI();
+				profile(main,frame);
+
+		}
+		});
+		students.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			updateJSwing(main);
+			try {
+				students(main,frame);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+		}
+		});
+
+
+		
+		nav.add(profile);
+		nav.add(students);
+
+		
+		frame.add(nav);
+		frame.setLayout(null);
+
+		frame.setSize(icon.getIconWidth(),icon.getIconHeight());
+		frame.setVisible(true);
+ 
+		
+	}
+	public void updateJSwing(JPanel main) {
+		main.removeAll();
+		main.repaint();
+		main.updateUI();
+	}
+	public void navAttribute(JButton profile) {
+		profile.setForeground(Color.WHITE);
+		profile.setFont(new Font("Dialog", Font.PLAIN, 16));
+		profile.setPreferredSize(new Dimension(120,50));
+		profile.setContentAreaFilled(false);
+		profile.setBorderPainted(false);
+		profile.setFocusPainted(false);
+		//profile.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\pb.png"));			
+	}
+	public void profile(JPanel main,JFrame frame) {
+		main.setLayout(null);
+		main.setBounds(343,146, 1577, 788);
+		main.setOpaque(false);
+
+	
+		JLabel welcome =new JLabel("Hi, Xu Dong"); 
+		welcome.setFont(new java.awt.Font("Dialog", 1, 60));
+		welcome.setBounds(20, 50, 700, 500);
+		JLabel welcome2 =new JLabel("Welcome to information system"); 
+		welcome2.setFont(new java.awt.Font("Dialog", 1, 40));
+		welcome2.setBounds(20, 110, 700, 500);
+
+
+		main.add(welcome);
+		main.add(welcome2);
+	}
+	private Vector getNextRow(ResultSet rs,ResultSetMetaData rsmd) throws SQLException{
+	Vector currentRow=new Vector();
+	for(int i=1;i<=rsmd.getColumnCount();i++){
+		currentRow.addElement(rs.getString(i));
+	}
+	return currentRow;
+	}
+	public void students(JPanel main,JFrame frame) throws Exception {
+		ResultSet accountsRs;
+		main.setBounds(343,146, 1577, 788);
+		
+		
+		//
+		Drivers();
+		String sql ="select * from Accounts";
+		accountsRs = stmt.executeQuery(sql);
+		if(!(accountsRs.next()))
+		{
+		   JOptionPane.showMessageDialog(null, "结果集中无记录", "无记录",JOptionPane.INFORMATION_MESSAGE);
+		}
+		ResultSetMetaData rsmd= (ResultSetMetaData) accountsRs.getMetaData();
+		Vector rows = new Vector();
+		Vector columnHeads=new Vector();	
+		
+		for(int i=1;i<=rsmd.getColumnCount();i++)
+		{
+		    columnHeads.addElement(rsmd.getColumnName(i));//添加列名
+		}
+		do{
+		     rows.addElement(getNextRow(accountsRs,rsmd));//添加表行值
+		}while(accountsRs.next());
+			JTable table = new JTable(rows,columnHeads);	
+			table.setSize(new Dimension(1577, 788));//设置表的大小
+			accountsRs.close();		
+	    stmt.close();
+		con.close();
+	    //
+	    
+	    
+	    
+		main.setVisible(true); 
+
+		JButton addAccounts= new JButton("Add account");
+		addAccounts.setBounds(0,738, 200, 50);
+
+		JButton addStudents= new JButton("Add student");
+		addAccounts.setBounds(0,738, 200, 50);
+		
+		
+		main.add(addStudents);
+
+		main.add(table);
+		
+		addAccounts.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			JFrame addAccount=new JFrame("Add account");
+			addAccount.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			addAccount.setLayout(null);
+			addAccount.setVisible(true);
+			JPanel addAccountP=new JPanel();
+			addAccountP.setLayout(null);
+			addAccountP.setBounds(0,0,300,220);
+			
+		    JLabel accName = new JLabel("Account name:");
+		    accName.setBounds(30, 40, 100, 20);
+		    JTextField accName1 = new JTextField();
+		    accName1.setBounds(140, 40, 100, 20);
+		    JLabel password = new JLabel("Password:");
+		    password.setBounds(30, 70, 100, 20);
+		    JTextField password1 = new JTextField();
+		    password1.setBounds(140, 70, 100, 20);
+		    JButton okbtn = new JButton("Confirm");
+		    okbtn.setBounds(30, 120, 80, 20);
+		    JButton cancelbtn = new JButton("Cancel");
+		    cancelbtn.setBounds(160, 120, 80, 20);
+
+		    addAccountP.add(accName);
+		    addAccountP.add(accName1);
+		    addAccountP.add(password);
+		    addAccountP.add(password1);
+		    addAccountP.add(okbtn);
+		    addAccountP.add(cancelbtn);
+		    addAccount.setLocation(900,500);
+		    addAccount.setSize(300,220);
+		    addAccount.setVisible(true);
+			addAccount.add(addAccountP);
+
+		    }
+		});
+	}	
+}
