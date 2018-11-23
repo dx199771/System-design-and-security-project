@@ -1,0 +1,47 @@
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+
+public class JButtonTableExample {
+
+    public void jButtonTableExample(JTable table) {
+
+        table.getColumn("remove").setCellEditor(new ButtonEditor());
+
+
+
+        table.setPreferredScrollableViewportSize(table.getPreferredSize());//thanks mKorbel +1 http://stackoverflow.com/questions/10551995/how-to-set-jscrollpane-layout-to-be-the-same-as-jtable
+
+        table.getColumnModel().getColumn(0).setPreferredWidth(100);//so buttons will fit and not be shown butto..
+        
+    } 
+    protected JButton button;
+    private String label;
+    private boolean isPushed;
+
+    public void ButtonEditor() {
+        button = new JButton();
+        //button.setOpaque(true);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, ": Ouch!");
+
+            }
+        });
+    }
+}
+
+
+

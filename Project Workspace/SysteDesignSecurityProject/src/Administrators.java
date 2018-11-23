@@ -1,4 +1,10 @@
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -194,13 +200,53 @@ public class Administrators{
 		     rows.addElement(getNextRow(accountsRs,rsmd));//添加表行值
 		}while(accountsRs.next());
 		
-		JButton remove = new JButton("remove");
+		
 		columnHeads.addElement("remove");
-				
+		JTable table = new JTable(rows,columnHeads);
+
+		
+		//JButtonTableExample jte = new JButtonTableExample();
+		//jte.jButtonTableExample(table);
+		//jte
+		
+
+		
+	    table.setCellSelectionEnabled(true);
+	    ListSelectionModel cellSelectionModel = table.getSelectionModel();
+	    cellSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+	    cellSelectionModel.addListSelectionListener(new ListSelectionListener() {
+	  	int count1=0;
+	      public void valueChanged(ListSelectionEvent e) {
+
+	          if(count1%2==0) {
+	          String selectedData = null;
+
+	          int[] selectedRow = table.getSelectedRows();
+	          int[] selectedColumns = table.getSelectedColumns();
+	          for (int i = 0; i < selectedRow.length; i++) {
+	              for (int j = 0; j < selectedColumns.length; j++) {
+	                selectedData = (String) table.getValueAt(selectedRow[i], selectedColumns[j]);
+	              }
+	          }    
+	          if(selectedData==null) {
+	        	  
+	          }
+	        	  
+	          }
+	          count1++;
+
+	          
+	      }
+	    });
 
 		
 		
-			JTable table = new JTable(rows,columnHeads);	
+		
+		
+
+
+
 			table.setSize(new Dimension(1577, 788));//设置表的大小 
 			accountsRs.close();		
 	    stmt.close();
@@ -296,6 +342,8 @@ public class Administrators{
 		    }
 		});
 	}
+	
+    
 	public void departments(JPanel main,JFrame frame) throws Exception {
 		main.setBounds(343,146, 1577, 788);
 		

@@ -212,3 +212,29 @@ public class Registrars {
 		});
 	}	
 }
+
+
+
+
+
+
+
+
+if(!(departmentsRs.next()))
+{
+   JOptionPane.showMessageDialog(null, "结果集中无记录", "无记录",JOptionPane.INFORMATION_MESSAGE);
+}
+ResultSetMetaData rsmd= (ResultSetMetaData) departmentsRs.getMetaData();
+Vector rows = new Vector();
+Vector columnHeads=new Vector();	
+
+for(int i=1;i<=rsmd.getColumnCount();i++)
+{
+    columnHeads.addElement(rsmd.getColumnName(i));//添加列名
+}
+do{
+     rows.addElement(getNextRow(departmentsRs,rsmd));//添加表行值
+}while(departmentsRs.next());
+	JTable table = new JTable(rows,columnHeads);	
+	table.setSize(new Dimension(1577, 788));//设置表的大小
+	departmentsRs.close();

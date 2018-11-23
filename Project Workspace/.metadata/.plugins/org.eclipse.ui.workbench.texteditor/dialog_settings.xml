@@ -2,12 +2,17 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="fd" key="selection"/>
+		<item value="stopCellEditing" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="stopCellEditing"/>
+			<item value="ouch"/>
+			<item value="ButtonRenderer"/>
+			<item value="setDataVector"/>
+			<item value="MyButtonEditor"/>
 			<item value="fd"/>
 			<item value="table"/>
 			<item value="aut"/>
