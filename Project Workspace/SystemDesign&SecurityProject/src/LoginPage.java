@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -9,27 +10,21 @@ import java.sql.Statement;
 import javax.swing.*;
  
 public class  LoginPage{
-	FindDrivers fd = new FindDrivers();
-
 	Statement stmt = null;
 	Connection con = null;  // a Connection object
-
+	FindDrivers getcon = new FindDrivers();
+	String username = null;
+	String Privileges = null;
 	public LoginPage(){
-		//加载图片
+	
 		ImageIcon icon=new ImageIcon("src\\images\\t1.jpg");
-		//Image im=new Image(icon);
-		//将图片放入label中
 		JLabel label=new JLabel(icon);
-		
-		//设置label的大小
 		label.setBounds(0,0,icon.getIconWidth(),icon.getIconHeight());
 		
 		JFrame frame=new JFrame();
 		
-		//获取窗口的第二层，将label放入
 		frame.getLayeredPane().add(label,new Integer(Integer.MIN_VALUE));
 			
-		//获取frame的顶层容器,并设置为透明
 		JPanel j=(JPanel)frame.getContentPane();
 		j.setOpaque(false);
  			
@@ -56,7 +51,7 @@ public class  LoginPage{
 		jb.setBackground(new Color(51,153,255));
 		jb.setBounds(40, 140, 240, 40);
 		jb.setForeground(Color.WHITE);
-		jb.setFont(new Font("宋体", Font.PLAIN, 16));
+		jb.setFont(new Font("Arial", Font.PLAIN, 16));
 		panel.setBounds(1354,450,300,700);
 		
 		panel.add(userNameTF);
@@ -65,7 +60,6 @@ public class  LoginPage{
 		panel.add(usernameIcon);
 		panel.add(passwordIcon);
 
-		//必须设置为透明的。否则看不到图片
 		panel.setOpaque(false);
 		
 		
@@ -80,76 +74,75 @@ public class  LoginPage{
 		jb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					findDrivers();
-					System.out.print("Found drivers");
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				
-				ResultSet rs = null;
-				ResultSet priv = null;
+					ResultSet rs = null;
+					username = userNameTF.getText();
+					String password = passwordTF.getText(); 
+					//User authentication
+					findDriver();
+					String rsString = "select `Privileges` from `Accounts` where `Username`='"+userNameTF.getText()+"' and `Password`='"+passwordTF.getText()+"'";
+					rs = stmt.executeQuery(rsString);
 
-				try {
-					rs = stmt.executeQuery("select `Privileges` from `Accounts` where `Username`='"+userNameTF.getText()+"' and `Password`='"+passwordTF.getText()+"'");
-
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-				
-	            try {
 					if(rs.next()) {
 						if(rs.getString("Privileges").equals("Administrators")) {
-
-						Administrators admin = new Administrators();
-						admin.adminPage();
-						frame.dispose();
+							Privileges = "Administrators";
+							Administrators admin = new Administrators();
+							admin.adminPage(getUserName(),getPriviliges());
+							frame.dispose();
+							}
+							else if(rs.getString("Privileges").equals("Registrars")){
+							Privileges = "Registrars";
+						    Registrars regis = new Registrars();
+						    regis.registarPage(getUserName(),getPriviliges());
+							frame.dispose();
+							}
+							else if(rs.getString("Privileges").equals("Teachers")){
+							Privileges = "Teachers";
+							//Teachers teacher = new Teachers(getUserName(),getPriviliges());
+							//teacher.teacherPage();
+							frame.dispose();
+							}
+							else if(rs.getString("Privileges").equals("Students")){
+							Privileges = "Students";
+							//Students student = new Students(getUserName(),getPriviliges());
+							//student.studentPage();
+							}
+							
 						}
-						else if(rs.getString("Privileges").equals("Registrars")){
-					    System.out.print(rs.getString("Privileges"));
-					    Registrars regis = new Registrars();
-					    regis.registarPage();
-						frame.dispose();
-						}
-					}
-					else {
+					else
 						JOptionPane.showMessageDialog(null, "Invalid username or password", "Login failed",JOptionPane.WARNING_MESSAGE);  
-					}
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-	    	    try {
-					stmt.close();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-	    		try {
 					con.close();
-				} catch (SQLException e1) {
+					stmt.close();
+					}
+				catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
+				
+
 			}
 			});
 
-	}
-	public void  findDrivers() throws Exception {  
-		try {
-		con = DriverManager.getConnection(
-			"jdbc:mysql://stusql.dcs.shef.ac.uk/team031", "team031", "4934b78c"); 
-		    
-		    stmt = con.createStatement();
 
-		  }
-		  catch (SQLException ex) {    
-			  ex.printStackTrace();
-		  }
-	}	
+	}
+	public String getUserName() {
+		return username;
+	}
+	public String getPriviliges() {
+		return Privileges;
+	}
+	//find Driver
+	public void findDriver(){
+		try {
+			  con = DriverManager.getConnection(
+			  		"jdbc:mysql://stusql.dcs.shef.ac.uk/team031", "team031", "4934b78c"); 
+			  
+			  stmt = con.createStatement();
+			  	
+			}
+		catch (SQLException ex) {    
+			ex.printStackTrace();
+		}
+	}
 	public static void main(String[] args) 
 	{
 		new LoginPage();
