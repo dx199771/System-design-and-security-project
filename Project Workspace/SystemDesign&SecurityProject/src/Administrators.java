@@ -3,18 +3,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-import java.util.Vector;
-import java.util.function.Consumer;
-
 import javax.swing.*;
-import javax.swing.table.JTableHeader;
 
 
 public class Administrators extends UserInterface{
-	Statement stmt =null;
-	Connection con = null;  // a Connection object
+
 	String userName = null;
 	String priviliges = null;
+	Database db = new Database();
 	public void adminPage(String username,String priv) {
 		userName = username;
 		priviliges = priv;
@@ -167,10 +163,10 @@ public class Administrators extends UserInterface{
 			    
 			    //combo box for selecting privileges
 				JComboBox PrivilegesBox=new JComboBox();
-				PrivilegesBox.addItem("Administrators");
-				PrivilegesBox.addItem("Registrars");
-				PrivilegesBox.addItem("Teachers");
-				PrivilegesBox.addItem("Students");
+				PrivilegesBox.addItem("Administrator");
+				PrivilegesBox.addItem("Registrar");
+				PrivilegesBox.addItem("Teacher");
+				PrivilegesBox.addItem("Student");
 				PrivilegesBox.setBounds(140, 100, 100, 20);
 
 				
@@ -200,12 +196,8 @@ public class Administrators extends UserInterface{
 							    String password = password1.getText();
 							    String privil = (String) PrivilegesBox.getSelectedItem();
 								
-							    stmt = findDriver();
-								String insertAccounts="INSERT INTO `Accounts` VALUES ('"+accName+"','"+password+"','"+privil+"')";
-								System.out.print(privil);
-								stmt.executeUpdate(insertAccounts);
-								System.out.println("Success");
-								stmt.close();
+								db.insertAccount(accName,password,privil);
+								System.out.println("Success added one user");
 								addAccount.dispose();
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
@@ -273,18 +265,12 @@ public class Administrators extends UserInterface{
 								String depName = depName1.getText();
 							    String abbCode = abbCode1.getText();
 								
-							    stmt = findDriver();
-								String insertDepartments="INSERT INTO `Departments` VALUES ('"+depName+"','"+abbCode+"','test');";
-								stmt.executeUpdate(insertDepartments);
-								System.out.println("Success");
-								stmt.close();
+								db.insertDepa(depName, abbCode);
 								addDepartment.dispose();
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
-							}
-
-							
+							}							
 					}
 				});
 				cancelbtn.addActionListener(new ActionListener() {
@@ -307,7 +293,7 @@ public class Administrators extends UserInterface{
 				
 				JPanel addDegreeP=new JPanel();
 				addDegreeP.setLayout(null);
-				addDegreeP.setBounds(0,0,300,220);
+				addDegreeP.setBounds(0,0,290,250);
 				
 			    JLabel deeName = new JLabel("Full name:");
 			    deeName.setBounds(30, 20, 100, 20);
@@ -323,22 +309,28 @@ public class Administrators extends UserInterface{
 			    JTextField leadDep1 = new JTextField();
 			    leadDep1.setBounds(140, 80, 100, 20);
 			    
-			    JLabel level = new JLabel("Level of study:");
+
+			    
+			    JLabel level = new JLabel("Years:");
 			    level.setBounds(30, 110, 100, 20);
 			    //combo box for selecting level of study
 				JComboBox PrivilegesBox=new JComboBox();
 				PrivilegesBox.addItem("1");
 				PrivilegesBox.addItem("2");
 				PrivilegesBox.addItem("3");
+				PrivilegesBox.addItem("4");
 				PrivilegesBox.addItem("P");
 				PrivilegesBox.setBounds(140, 110, 100, 20);
 			    
-
+			    JLabel industry = new JLabel("Year in industry:");
+			    industry.setBounds(30, 140, 100, 20);
+			    JCheckBox industry1 = new JCheckBox();
+			    industry1.setBounds(140, 140, 100, 20);
 				
 			    JButton okbtn = new JButton("Confirm");
-			    okbtn.setBounds(30, 140, 80, 20);
+			    okbtn.setBounds(30, 170, 80, 20);
 			    JButton cancelbtn = new JButton("Cancel");
-			    cancelbtn.setBounds(160, 140, 80, 20);
+			    cancelbtn.setBounds(160, 170, 80, 20);
 
 			    addDegreeP.add(deeName);
 			    addDegreeP.add(deeName1);
@@ -349,11 +341,13 @@ public class Administrators extends UserInterface{
 			    addDegreeP.add(leadDep1);
 
 			    addDegreeP.add(PrivilegesBox);
+			    addDegreeP.add(industry);
+			    addDegreeP.add(industry1);
 
 			    addDegreeP.add(okbtn);
 			    addDegreeP.add(cancelbtn);
 			    addDegree.setLocation(900,500);
-			    addDegree.setSize(290,220);
+			    addDegree.setSize(290,250);
 			    addDegree.setVisible(true);
 			    addDegree.add(addDegreeP);
 				okbtn.addActionListener(new ActionListener() {
@@ -362,14 +356,10 @@ public class Administrators extends UserInterface{
 							try {
 								String deeName = deeName1.getText();
 							    String abbCode = abbCode1.getText();
-							    String leadDep = leadDep1.getText();
 							    String level = (String) PrivilegesBox.getSelectedItem();
+							    Boolean selected =industry1.isSelected();
 
-							    stmt = findDriver();
-								String insertDepartments="INSERT INTO `Degrees` VALUES ('"+deeName+"','"+abbCode+"','"+leadDep+"','"+level+"'+'test');";
-								stmt.executeUpdate(insertDepartments);
-								System.out.println("Success");
-								stmt.close();
+								db.insertDee(deeName,abbCode,level,selected);
 								addDegree.dispose();
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
@@ -398,39 +388,27 @@ public class Administrators extends UserInterface{
 					JOptionPane.showMessageDialog(null, "No degree selected, select an degree.", "Error",JOptionPane.WARNING_MESSAGE);  
 
 				else {	
-				String getname= table.getValueAt(selected, 0).toString();
-				try {
-				stmt = findDriver();
-				
-				System.out.print(getname);	
-				String removeName;
-				
-				if(compName == "Accounts") {
-					removeName= "DELETE FROM "+compName+" WHERE `Username` = '"+getname+"'"; 
-					System.out.print(removeName);
-				
-				}else {
-					removeName= "DELETE FROM "+compName+" WHERE `Full name` = '"+getname+"'"; 
-				System.out.print(removeName);
-
-				}
-				stmt.executeUpdate(removeName);
-				stmt.close();
-
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				int getNumber= Integer.parseInt( (String) table.getValueAt(selected, 0));
+				db.removeItem(compName, getNumber);
 				}
 			}
-			});
-		
+		});
 	}
-	private void linkDegree(JButton remmovebt) throws Exception {
+	private void linkDegree(JButton remmovebt,JTable table) throws Exception {
 		remmovebt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ResultSet depRs;
+				JComboBox depBox = null;
+
+				int selected = table.getSelectedRow();
+				try {
+					depBox = db.getPBox("department");
+				} catch (SQLException e3) {
+					// TODO Auto-generated catch block
+					e3.printStackTrace();
+				}
+
+				if(selected != -1) {
 				//new frame for linking degree
 				JFrame linkDegree=new JFrame("Link degree");
 				linkDegree.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -441,137 +419,185 @@ public class Administrators extends UserInterface{
 				linkDegreeP.setLayout(null);
 				linkDegreeP.setBounds(0,0,300,220);
 				
-			    JLabel depName = new JLabel("Department name:");
+			    JLabel depName = new JLabel("Lead department name:");
 			    depName.setBounds(30, 20, 130, 20);
-
-			   
+			    JLabel leadepName = new JLabel("Department name:");
+			    leadepName.setBounds(30, 50, 130, 20);
+			    depBox.setBounds(170, 50, 130, 20);
 			    //combo box for selecting level of study
-				JComboBox PrivilegesBox=new JComboBox();
-				PrivilegesBox.setBounds(170, 20, 130, 20);
-			    
-		
-				
+			    linkDegreeP.add(depBox);
+			    linkDegreeP.add(leadepName);
+
+				JComboBox PrivilegesBox;
 				try {
-					//find drivers
-				    stmt = findDriver();
-					String sql ="select `Full name` from Departments";
-					depRs = stmt.executeQuery(sql);
-					//String first = depRs.getString("Full name");
+					final String lead = (String)depBox.getSelectedItem();
+					PrivilegesBox = db.getPBox("department");
+					PrivilegesBox.setBounds(170, 20, 130, 20);
+					linkDegreeP.add(PrivilegesBox);
+					int degId =  Integer.parseInt((String) table.getValueAt(selected,0));
+					String yearS = (String) table.getValueAt(selected,3);
 
-					ResultSetMetaData rsmd= (ResultSetMetaData) depRs.getMetaData();
-					if(!(depRs.next()))
-					{
-					   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
-					}
-					else {
-						PrivilegesBox.addItem(depRs.getString("Full name"));
 
-						while(depRs.next()) {
-							PrivilegesBox.addItem(depRs.getString("Full name"));
+				    JButton okbtn = new JButton("Link");
+				    okbtn.setBounds(30, 140, 80, 20);
+				    JButton cancelbtn = new JButton("Cancel");
+				    cancelbtn.setBounds(220, 140, 80, 20);
+
+				    linkDegreeP.add(depName);
+
+
+				    linkDegreeP.add(okbtn);
+				    linkDegreeP.add(cancelbtn);
+				    linkDegree.setLocation(900,500);
+				    linkDegree.setSize(350,220);
+				    linkDegree.setVisible(true);
+				    linkDegree.add(linkDegreeP);
+					okbtn.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+
+
+								    String level = (String) PrivilegesBox.getSelectedItem();
+								    try {
+										db.linkDee(degId, level,lead);
+									} catch (SQLException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+									System.out.println("Success");
+									linkDegree.dispose();
+								
+								
 						}
-					}
-					depRs.close();
-
-					stmt.close();
+					});
+					cancelbtn.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							linkDegree.dispose();
+						}
+					});
 				} catch (SQLException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
-				}		
+				}
+				}
+				else
+					JOptionPane.showMessageDialog(null, "You must select a deegre!", "No data",JOptionPane.INFORMATION_MESSAGE);
 
+			}
+			});
+		
+	}
+	private void linkMod(JButton remmovebt,JTable table) throws Exception {
+		remmovebt.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				JComboBox deeBox = null;
+				int selected = table.getSelectedRow();
+				int degId =  Integer.parseInt((String) table.getValueAt(selected,0));
 
+				try {
+					deeBox = db.getPBox("degree");
+				} catch (SQLException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
 				
+				if(selected != -1) {
+				JFrame linkMod=new JFrame("Link module");
+				linkMod.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				linkMod.setLayout(null);
+				linkMod.setVisible(true);
+				JPanel linkModP=new JPanel();
+				linkModP.setLayout(null);
+				linkModP.setBounds(0,0,350,220);
 				
+				JLabel deeName = new JLabel("Degree name:");
+				deeName.setBounds(30, 30, 130, 20);	
+
+				deeBox.setBounds(170, 30, 130, 20);
 				
-			    JButton okbtn = new JButton("Link");
-			    okbtn.setBounds(30, 140, 80, 20);
+				JLabel credits = new JLabel("Credits:");
+				credits.setBounds(30, 60, 130, 20);
+				JTextField credits1 =new JTextField();
+				credits1.setBounds(170, 60, 130, 20);
+
+				JLabel term = new JLabel("Term:");
+				term.setBounds(30, 90, 130, 20);
+				JComboBox term1=new JComboBox();
+				term1.addItem("Autumn");
+				term1.addItem("Spring");
+				term1.addItem("Year");
+				term1.setBounds(170, 90, 130, 20);
+				String name = (String)deeBox.getSelectedItem();
+
+				JLabel core = new JLabel("Core:");
+				core.setBounds(30, 120, 130, 20);
+				JCheckBox core1 = new JCheckBox();
+				core1.setBounds(170, 120, 130, 20);
+				
+				JButton okbtn = new JButton("Link");
+			    okbtn.setBounds(30, 150, 80, 20);
 			    JButton cancelbtn = new JButton("Cancel");
-			    cancelbtn.setBounds(220, 140, 80, 20);
+			    cancelbtn.setBounds(220, 150, 80, 20);
 
-			    linkDegreeP.add(depName);
-
-			    linkDegreeP.add(PrivilegesBox);
-
-			    linkDegreeP.add(okbtn);
-			    linkDegreeP.add(cancelbtn);
-			    linkDegree.setLocation(900,500);
-			    linkDegree.setSize(350,220);
-			    linkDegree.setVisible(true);
-			    linkDegree.add(linkDegreeP);
-				okbtn.addActionListener(new ActionListener() {
+			    linkModP.add(deeName);
+			    linkModP.add(deeBox);
+			    linkModP.add(credits);
+			    linkModP.add(credits1);
+			    linkModP.add(term);
+			    linkModP.add(term1);
+			    linkModP.add(core);
+			    linkModP.add(core1);
+			    linkModP.add(okbtn);
+			    linkModP.add(cancelbtn);
+			    linkMod.setLocation(900,500);
+			    linkMod.setSize(350,220);
+			    linkMod.setVisible(true);
+			    linkMod.add(linkModP);
+			    okbtn.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-							try {
 
-							    String level = (String) PrivilegesBox.getSelectedItem();
-
-							    stmt = findDriver();
-								String insertDepartments="INSERT INTO `Degrees` VALUES ('"+deeName+"','"+abbCode+"','"+level+"','test');";
-								stmt.executeUpdate(insertDepartments);
-								System.out.println("Success");
-								stmt.close();
-								linkDegree.dispose();
-							} catch (Exception e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-
-							
+						String cre = credits1.getText();
+						String term = (String) term1.getSelectedItem();
+						boolean core = core1.isSelected();
+						try {
+							db.linkMod(degId,name, cre, term,core);
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						System.out.println("Success");
+						linkMod.dispose();			
 					}
 				});
 				cancelbtn.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						linkDegree.dispose();
+						linkMod.dispose();
 					}
 				});
+				}
+				else
+					JOptionPane.showMessageDialog(null, "You must select a module!", "No data",JOptionPane.INFORMATION_MESSAGE);
+
 			}
-			});
-		
+		});
 	}
 	public void accounts(JPanel main,JFrame frame) throws Exception {
-		ResultSet accountsRs;
-		
-		
-		//find drivers
-		stmt = super.findDriver();
 
-		String sql ="select * from Accounts";
-		accountsRs = stmt.executeQuery(sql);
-		if(!(accountsRs.next()))
-		{
-		   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
-		}
-		ResultSetMetaData rsmd= (ResultSetMetaData) accountsRs.getMetaData();
-		Vector rows = new Vector();
-		Vector columnHeads=new Vector();	
-		
-		for(int i=1;i<=rsmd.getColumnCount();i++)
-		{
-		    columnHeads.addElement(rsmd.getColumnName(i));
-		}
-		do{
-		     rows.addElement(getNextRow(accountsRs,rsmd));
-		}while(accountsRs.next());
-			
-
-		
-		
-
-		
-		JTable table = new JTable(rows,columnHeads);
+		String role ="accounts";
+		JTable table = db.displayTable(role);
 		JScrollPane jsp= new JScrollPane(table);
-	  
 		jsp.setSize(new Dimension(1577, 588));
-		accountsRs.close();		
-		stmt.close();
-	    //
 	    
 		JButton removeAccounts= new JButton("Remove account");
 		JButton addAccounts= new JButton("Add account");
 		addAccounts.setBounds(0,738, 200, 50);
 		removeAccounts.setBounds(250,738, 200, 50);
-		//event listner
-		String itemName = "Accounts";
+		//event listener
+		String itemName = "accounts";
 		addAccount(addAccounts);
 		removeItem(removeAccounts,table, itemName);
 
@@ -582,53 +608,23 @@ public class Administrators extends UserInterface{
 		main.add(removeAccounts);
 		main.add(jsp,BorderLayout.CENTER);
 		
-		
 	}
 	public void departments(JPanel main,JFrame frame) throws Exception {
-		ResultSet departmentsRs;
 		
-		
-		//find drivers
-		stmt = super.findDriver();
-		String sql ="select * from Departments";
-		departmentsRs = stmt.executeQuery(sql);
-		if(!(departmentsRs.next()))
-		{
-		   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
-		}
-		ResultSetMetaData rsmd= (ResultSetMetaData) departmentsRs.getMetaData();
-		Vector rows = new Vector();
-		Vector columnHeads=new Vector();	
-		
-		for(int i=1;i<=rsmd.getColumnCount();i++)
-		{
-		    columnHeads.addElement(rsmd.getColumnName(i));//
-		}
-		do{
-		     rows.addElement(getNextRow(departmentsRs,rsmd));//
-		}while(departmentsRs.next());
-			
-
-		
-		
-		JTable table = new JTable(rows,columnHeads);	
+		String role ="department";
+		JTable table = db.displayTable(role);
 		JScrollPane jsp= new JScrollPane(table);
 
 		jsp.setSize(new Dimension(1577, 588));
 		
-		departmentsRs.close();		
-		stmt.close();
-
-
 		JButton removeDepartments= new JButton("Remove department");
 		JButton addDepartmentsB= new JButton("Add department");
 		addDepartmentsB.setBounds(0,738, 200, 50);
 		removeDepartments.setBounds(250,738, 200, 50);
-		String itemName = "Departments";
+		String itemName = "department";
 
 		addDepartment(addDepartmentsB);
 		removeItem(removeDepartments,table, itemName);
-
 
 		main.setBounds(343,146, 1577, 788);
 		main.setVisible(true); 
@@ -639,40 +635,13 @@ public class Administrators extends UserInterface{
 		
 	}
 	public void degrees(JPanel main,JFrame frame) throws Exception {
-		ResultSet degreesRs;
 		
-		
-		//find drivers
-		stmt = super.findDriver();
-		String sql ="select * from Degrees";
-		degreesRs = stmt.executeQuery(sql);
-		if(!(degreesRs.next()))
-		{
-		   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
-		}
-		ResultSetMetaData rsmd= (ResultSetMetaData) degreesRs.getMetaData();
-		Vector rows = new Vector();
-		Vector columnHeads=new Vector();	
-		
-		for(int i=1;i<=rsmd.getColumnCount();i++)
-		{
-		    columnHeads.addElement(rsmd.getColumnName(i));//
-		}
-		do{
-		     rows.addElement(getNextRow(degreesRs,rsmd));//
-		}while(degreesRs.next());
-			
-
-		
-		
-		JTable table = new JTable(rows,columnHeads);
+		String role ="degree";
+		JTable table = db.displayTable(role);
 		JScrollPane jsp= new JScrollPane(table);
 
 		jsp.setSize(new Dimension(1577, 588));
-		degreesRs.close();		
-		stmt.close();
-
-	    
+   
 		JButton removeDegrees= new JButton("Remove degree");
 		JButton addDegrees= new JButton("Add degree");
 		JButton linkDegrees= new JButton("Link degree");
@@ -681,80 +650,46 @@ public class Administrators extends UserInterface{
 		removeDegrees.setBounds(250,738, 200, 50);
 		linkDegrees.setBounds(500,738, 200, 50);
 		
-		
-		linkDegree(linkDegrees);
+		linkDegree(linkDegrees,table);
 		addDegree(addDegrees);
-		String itemName = "Degrees";
+		String itemName = "degree";
 		removeItem(removeDegrees,table, itemName);
 
-		
 		main.setBounds(343,146, 1577, 788);
 		main.setVisible(true); 
 		main.add(addDegrees);
 		main.add(removeDegrees);
 		main.add(linkDegrees);
 		main.add(jsp);
-		
-		
+			
 	}
-	public void modules(JPanel main,JFrame frame) throws Exception {
-		ResultSet modulesRs;
+	public void modules(JPanel main,JFrame frame) throws Exception {		
 		
-		
-		//find drivers
-		stmt = super.findDriver();
-		String sql ="select * from Modules";
-		modulesRs = stmt.executeQuery(sql);
-		if(!(modulesRs.next()))
-		{
-		   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
-		}
-		ResultSetMetaData rsmd= (ResultSetMetaData) modulesRs.getMetaData();
-		Vector rows = new Vector();
-		Vector columnHeads=new Vector();	
-		
-		for(int i=1;i<=rsmd.getColumnCount();i++)
-		{
-		    columnHeads.addElement(rsmd.getColumnName(i));//
-		}
-		do{
-		     rows.addElement(getNextRow(modulesRs,rsmd));//
-		}while(modulesRs.next());
-			
-
-		
-		
-		JTable table = new JTable(rows,columnHeads);
+		String role ="module";
+		JTable table = db.displayTable(role);
 		JScrollPane jsp= new JScrollPane(table);
 
 		jsp.setSize(new Dimension(1577, 588));
-		modulesRs.close();		
-		stmt.close();
+	 
+		JButton removeMod= new JButton("Remove module");
+		JButton addMod= new JButton("Add module");
+		JButton linkMod= new JButton("Link module");
 
-	    
-		JButton removeDegrees= new JButton("Remove degree");
-		JButton addDegrees= new JButton("Add degree");
-		JButton linkDegrees= new JButton("Link degree");
-
-		addDegrees.setBounds(0,738, 200, 50);
-		removeDegrees.setBounds(250,738, 200, 50);
-		linkDegrees.setBounds(500,738, 200, 50);
+		addMod.setBounds(0,738, 200, 50);
+		removeMod.setBounds(250,738, 200, 50);
+		linkMod.setBounds(500,738, 200, 50);
 		
-		
-		linkDegree(linkDegrees);
-		addDegree(addDegrees);
-		String itemName = "Degrees";
-		removeItem(removeDegrees,table, itemName);
-
+		linkMod(linkMod,table);
+		addDegree(addMod);
+		String itemName = "module";
+		removeItem(removeMod,table, itemName);
 		
 		main.setBounds(343,146, 1577, 788);
 		main.setVisible(true); 
-		main.add(addDegrees);
-		main.add(removeDegrees);
-		main.add(linkDegrees);
-		main.add(jsp);
-		
-		
+		main.add(addMod);
+		main.add(removeMod);
+		main.add(linkMod);
+		main.add(jsp);	
 	}
 	//navigation attribute set up
 	public void navAttribute(JButton bt) {
@@ -774,13 +709,6 @@ public class Administrators extends UserInterface{
 		main.updateUI();
 	}
 	
-	//get next row in database table
-	private Vector getNextRow(ResultSet rs,ResultSetMetaData rsmd) throws SQLException{
-		Vector currentRow=new Vector();
-		for(int i=1;i<=rsmd.getColumnCount();i++){
-			currentRow.addElement(rs.getString(i));
-		}
-		return currentRow;
-	}
+
 	
 }

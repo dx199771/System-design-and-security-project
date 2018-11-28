@@ -42,19 +42,6 @@ public abstract class UserInterface {
 	}
 
 	
-	//find Driver
-	public Statement findDriver(){
-		try {
-			  con = DriverManager.getConnection(
-			  		"jdbc:mysql://stusql.dcs.shef.ac.uk/team031", "team031", "4934b78c"); 
-			  
-			  stmt = con.createStatement();
-			  	
-			}
-		catch (SQLException ex) {    
-			ex.printStackTrace();
-		}
-		return stmt;
-	}
+	
 	
 }

@@ -12,15 +12,18 @@ import javax.swing.*;
 public class  LoginPage{
 	Statement stmt = null;
 	Connection con = null;  // a Connection object
-	FindDrivers getcon = new FindDrivers();
+	Database db = new Database();
 	String username = null;
 	String Privileges = null;
+	String Host = "jdbc:mysql://stusql.dcs.shef.ac.uk/team031";
+	String UserName = "team031";
+	String PassWord = "4934b78c";
 	public LoginPage(){
 	
 		ImageIcon icon=new ImageIcon("src\\images\\t1.jpg");
 		JLabel label=new JLabel(icon);
 		label.setBounds(0,0,icon.getIconWidth(),icon.getIconHeight());
-		
+			
 		JFrame frame=new JFrame();
 		
 		frame.getLayeredPane().add(label,new Integer(Integer.MIN_VALUE));
@@ -73,36 +76,40 @@ public class  LoginPage{
  
 		jb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
+
 					ResultSet rs = null;
 					username = userNameTF.getText();
 					String password = passwordTF.getText(); 
 					//User authentication
-					findDriver();
-					String rsString = "select `Privileges` from `Accounts` where `Username`='"+userNameTF.getText()+"' and `Password`='"+passwordTF.getText()+"'";
+					try(Connection con =DriverManager.getConnection(
+							Host, UserName, PassWord)){
+						stmt = con.createStatement();
+
+					String rsString = "select `permissions` from `accounts` where `username`='"+userNameTF.getText()+"' and `password`='"+passwordTF.getText()+"'";
 					rs = stmt.executeQuery(rsString);
 
 					if(rs.next()) {
-						if(rs.getString("Privileges").equals("Administrators")) {
-							Privileges = "Administrators";
+						if(rs.getString("permissions").equals("Administrator")) {
+							Privileges = "Administrator";
+							
 							Administrators admin = new Administrators();
 							admin.adminPage(getUserName(),getPriviliges());
 							frame.dispose();
 							}
-							else if(rs.getString("Privileges").equals("Registrars")){
-							Privileges = "Registrars";
+							else if(rs.getString("permissions").equals("Registrar")){
+							Privileges = "Registrar";
 						    Registrars regis = new Registrars();
 						    regis.registarPage(getUserName(),getPriviliges());
 							frame.dispose();
 							}
-							else if(rs.getString("Privileges").equals("Teachers")){
-							Privileges = "Teachers";
+							else if(rs.getString("permissions").equals("Teacher")){
+							Privileges = "Teacher";
 							//Teachers teacher = new Teachers(getUserName(),getPriviliges());
 							//teacher.teacherPage();
 							frame.dispose();
 							}
-							else if(rs.getString("Privileges").equals("Students")){
-							Privileges = "Students";
+							else if(rs.getString("Privileges").equals("Student")){
+							Privileges = "Student";
 							//Students student = new Students(getUserName(),getPriviliges());
 							//student.studentPage();
 							}
@@ -110,9 +117,9 @@ public class  LoginPage{
 						}
 					else
 						JOptionPane.showMessageDialog(null, "Invalid username or password", "Login failed",JOptionPane.WARNING_MESSAGE);  
-					con.close();
-					stmt.close();
+
 					}
+				
 				catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -130,19 +137,7 @@ public class  LoginPage{
 	public String getPriviliges() {
 		return Privileges;
 	}
-	//find Driver
-	public void findDriver(){
-		try {
-			  con = DriverManager.getConnection(
-			  		"jdbc:mysql://stusql.dcs.shef.ac.uk/team031", "team031", "4934b78c"); 
-			  
-			  stmt = con.createStatement();
-			  	
-			}
-		catch (SQLException ex) {    
-			ex.printStackTrace();
-		}
-	}
+
 	public static void main(String[] args) 
 	{
 		new LoginPage();

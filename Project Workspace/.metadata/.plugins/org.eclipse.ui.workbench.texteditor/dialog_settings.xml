@@ -2,27 +2,27 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="removeName" key="selection"/>
+		<item value="addDegree" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="removeName"/>
-			<item value="remove"/>
+			<item value="addDegree"/>
 			<item value="removeItem"/>
-			<item value="findDriver"/>
-			<item value="con "/>
-			<item value="con"/>
-			<item value="null"/>
-			<item value="stopCellEditing"/>
-			<item value="ouch"/>
-			<item value="ButtonRenderer"/>
-			<item value="setDataVector"/>
-			<item value="MyButtonEditor"/>
-			<item value="fd"/>
-			<item value="table"/>
-			<item value="aut"/>
+			<item value="checkB"/>
+			<item value="linkMod"/>
+			<item value="checkBox"/>
+			<item value="box"/>
+			<item value="Box"/>
+			<item value="getSelec"/>
+			<item value="JComboBox"/>
+			<item value="linkDee"/>
+			<item value="insertDee"/>
+			<item value="accounts"/>
+			<item value="displayTable"/>
+			<item value="link"/>
+			<item value="linkDegree"/>
 		</list>
 		<list key="replacehistory">
 		</list>
@@ -31,7 +31,7 @@
 		<item value="300" key="DIALOG_WIDTH"/>
 		<item value="1|Microsoft YaHei UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Microsoft YaHei UI" key="DIALOG_FONT_NAME"/>
 		<item value="410" key="DIALOG_HEIGHT"/>
-		<item value="934" key="DIALOG_X_ORIGIN"/>
-		<item value="435" key="DIALOG_Y_ORIGIN"/>
+		<item value="1172" key="DIALOG_X_ORIGIN"/>
+		<item value="454" key="DIALOG_Y_ORIGIN"/>
 	</section>
 </section>

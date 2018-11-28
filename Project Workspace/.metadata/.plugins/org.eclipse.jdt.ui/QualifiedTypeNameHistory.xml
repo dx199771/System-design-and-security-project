@@ -21,4 +21,5 @@
 <fullyQualifiedTypeName name="javax.swing.JButton"/>
 <fullyQualifiedTypeName name="javax.swing.DefaultCellEditor"/>
 <fullyQualifiedTypeName name="JButtonTableExample"/>
+<fullyQualifiedTypeName name="javax.swing.JComboBox"/>
 </qualifiedTypeNameHistroy>

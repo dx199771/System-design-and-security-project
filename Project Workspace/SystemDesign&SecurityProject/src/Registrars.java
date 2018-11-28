@@ -8,10 +8,11 @@ import javax.swing.*;
 
 
 public class Registrars extends UserInterface{
-	Statement stmt = null;
-	Connection con = null;  // a Connection object
+
 	String userName = null;
 	String priviliges = null;
+	Database db = new Database();
+
 	public void registarPage(String username,String priv) {
 		userName = username;
 		priviliges = priv;
@@ -98,33 +99,12 @@ public class Registrars extends UserInterface{
 	}
 
 	public void students(JPanel main,JFrame frame) throws Exception {
-		ResultSet studentsRs;
-		//find drivers
-		stmt = super.findDriver();
-		String sql ="select * from Students";
-		studentsRs = stmt.executeQuery(sql);
-		if(!(studentsRs.next()))
-		{
-		   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
-		}
-		ResultSetMetaData rsmd= (ResultSetMetaData) studentsRs.getMetaData();
-		Vector rows = new Vector();
-		Vector columnHeads=new Vector();	
-		
-		for(int i=1;i<=rsmd.getColumnCount();i++)
-		{
-		    columnHeads.addElement(rsmd.getColumnName(i));
-		}
-		do{
-		     rows.addElement(getNextRow(studentsRs,rsmd));
-		}while(studentsRs.next());
-		
-		JTable table = new JTable(rows,columnHeads);
+		String role ="student";
+		JTable table = db.displayTable(role);
+
 		JScrollPane jsp= new JScrollPane(table);
 
 		jsp.setSize(new Dimension(1577, 588));
-		studentsRs.close();		
-		stmt.close();
 		
 		JButton addStudents= new JButton("Add student");
 		JButton removeStudent= new JButton("Remove student");
@@ -135,7 +115,7 @@ public class Registrars extends UserInterface{
 		regStudent.setBounds(500,738, 200, 50);
 		registerStudent(regStudent);
 
-		removeItem(removeStudent,table, "Students");
+		removeItem(removeStudent,table, role);
 		addStudent(addStudents);
 
 		main.setBounds(343,146, 1577, 788);
@@ -177,16 +157,28 @@ public class Registrars extends UserInterface{
 			    JTextField forename1 = new JTextField();
 			    forename1.setBounds(170, 80, 190, 20);
 			    
-			    JLabel degree = new JLabel("Degree");
-			    degree.setBounds(30, 110, 130, 20);
+			    JLabel email = new JLabel("Email");
+			    email.setBounds(30, 110, 130, 20);
+			    JTextField email1 = new JTextField();
+			    email1.setBounds(170, 110, 190, 20);
+			    
+			    JLabel tutor = new JLabel("Tutor");
+			    tutor.setBounds(30, 130, 130, 20);
+			    JTextField tutor1 = new JTextField();
+			    tutor1.setBounds(170, 130, 190, 20);    
+			    
+			    
+			    
+			    
+			    
+			    
+			    
 			    //combo box for selecting level of study
 				JComboBox PrivilegesBox=new JComboBox();
 				PrivilegesBox.setBounds(170, 110, 190, 20);
-			    
 				
 				try {
 				//find drivers
-				stmt = findDriver();
 				String sql ="select `Full name` from Degrees";
 				
 				stuRs = stmt.executeQuery(sql);
