@@ -99,7 +99,7 @@ public class Registrars extends UserInterface{
 	}
 
 	public void students(JPanel main,JFrame frame) throws Exception {
-		String role ="student";
+		String role ="Student";
 		JTable table = db.displayTable(role);
 
 		JScrollPane jsp= new JScrollPane(table);
@@ -109,32 +109,123 @@ public class Registrars extends UserInterface{
 		JButton addStudents= new JButton("Add student");
 		JButton removeStudent= new JButton("Remove student");
 		JButton regStudent= new JButton("Register student");
+		JButton optional= new JButton("Add/Drop optional module(s)");
 
 		addStudents.setBounds(0,738, 200, 50);
 		removeStudent.setBounds(250,738, 200, 50);
 		regStudent.setBounds(500,738, 200, 50);
-		registerStudent(regStudent);
+		optional.setBounds(750,738, 200, 50);
 
-		removeItem(removeStudent,table, role);
+		registerStudent(regStudent,table);
+
 		addStudent(addStudents);
-
+		optionalModule(optional,table);
 		main.setBounds(343,146, 1577, 788);
 		main.setVisible(true); 
 		main.add(addStudents);
 		main.add(removeStudent);
 		main.add(regStudent);
+		main.add(optional);
 
 		main.add(jsp);
+		
+	}
+	public void optionalModule(JButton button,JTable table) {
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int selected = table.getSelectedRow();
+				if(selected != -1) {
+					int degId =  Integer.parseInt((String) table.getValueAt(selected,0));
+
+					try {	
+				JFrame OptionalModule=new JFrame("Optional Module");
+				OptionalModule.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				OptionalModule.setLayout(null);
+				OptionalModule.setVisible(true);
+				
+				JPanel OptionalModuleP=new JPanel();
+				
+				
+				
+
+				
+				JLabel addOp = new JLabel("Add a optional module:");
+				addOp.setBounds(30, 60, 130, 20);
+
+				JComboBox allMod = db.getPBox("Module");
+				allMod.setBounds(200, 60, 130, 20);
+
+				JButton add = new JButton("Add");
+				add.setBounds(350, 60, 120, 20);
+
+				
+				
+				
+				JLabel dropOp = new JLabel("Drop a optional module:");
+				dropOp.setBounds(30, 90, 140, 20);
+
+				JComboBox allMod1 = db.getPBox("Module");
+				allMod1.setBounds(200, 90, 130, 20);
+
+				JButton drop = new JButton("Drop");
+				drop.setBounds(350, 90, 120, 20);
+				
+
+				OptionalModuleP.add(add);
+				OptionalModuleP.add(dropOp);
+				OptionalModuleP.add(allMod1);
+				OptionalModuleP.add(drop);
+				
+				OptionalModuleP.add(addOp);
+				OptionalModuleP.add(allMod);
+
+				OptionalModuleP.setLayout(null);
+				OptionalModuleP.setBounds(0,0,510,200);
+			    
+				OptionalModule.setLocation(900,500);
+				OptionalModule.setSize(510,200);
+				OptionalModule.setVisible(true);
+				OptionalModule.add(OptionalModuleP);
+				add.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+
+						String mess = "You have added one optional module"+", current credits: "+ db.getCurrentCredit(degId);
+						JOptionPane.showMessageDialog(null, mess, "No data",JOptionPane.INFORMATION_MESSAGE);
+
+					}
+				});
+				drop.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+
+						String mess = "You have dropped one optional module"+", current credits: "+ db.getCurrentCredit(degId);
+
+						JOptionPane.showMessageDialog(null, mess, "No data",JOptionPane.INFORMATION_MESSAGE);
+
+					}
+				});
+
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+				else
+					JOptionPane.showMessageDialog(null, "You must select a student!", "No data",JOptionPane.INFORMATION_MESSAGE);
+			}
+			
+		});
 		
 	}
 	private void addStudent(JButton addStudents) throws Exception {
 		addStudents.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ResultSet stuRs;
-			
+
+				try {
 				//new frame for adding department
 				JFrame addStudent=new JFrame("Add Student");
-				addStudent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				addStudent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				addStudent.setLayout(null);
 				addStudent.setVisible(true);
 				
@@ -144,9 +235,18 @@ public class Registrars extends UserInterface{
 				
 			    JLabel title = new JLabel("Tiele:");
 			    title.setBounds(30, 20, 130, 20);
-			    JTextField title1 = new JTextField();
-			    title1.setBounds(170, 20, 190, 20);
 			    
+			    JComboBox titleBox=new JComboBox();
+			    titleBox.addItem("Mr.");
+				titleBox.addItem("Mrs.");
+				titleBox.addItem("Miss.");
+				titleBox.addItem("Ms.");
+				titleBox.addItem("Mx.");
+				titleBox.addItem("Sir.");
+				titleBox.addItem("Dr.");
+			    titleBox.setBounds(170, 20, 190, 20);
+
+				
 			    JLabel surname = new JLabel("Surname:");
 			    surname.setBounds(30, 50, 130, 20);
 			    JTextField surname1 = new JTextField();
@@ -163,88 +263,48 @@ public class Registrars extends UserInterface{
 			    email1.setBounds(170, 110, 190, 20);
 			    
 			    JLabel tutor = new JLabel("Tutor");
-			    tutor.setBounds(30, 130, 130, 20);
-			    JTextField tutor1 = new JTextField();
-			    tutor1.setBounds(170, 130, 190, 20);    
+			    tutor.setBounds(30, 140, 130, 20);
+			    String sql ="Tutor";
 			    
-			    
-			    
-			    
-			    
-			    
-			    
-			    //combo box for selecting level of study
-				JComboBox PrivilegesBox=new JComboBox();
-				PrivilegesBox.setBounds(170, 110, 190, 20);
+			    JComboBox tutorBox = db.getPBox(sql);
 				
-				try {
-				//find drivers
-				String sql ="select `Full name` from Degrees";
-				
-				stuRs = stmt.executeQuery(sql);
-				
-				//String first = depRs.getString("Full name");
-					ResultSetMetaData rsmd= (ResultSetMetaData) stuRs.getMetaData();
-				if(!(stuRs.next()))
-				{
-				   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
-				}
-				else {
-					PrivilegesBox.addItem(stuRs.getString("Full name"));
-						while(stuRs.next()) {
-						PrivilegesBox.addItem(stuRs.getString("Full name"));
-					}
-				}
-				stuRs.close();
-				stmt.close();
-				} catch (SQLException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				}
+			    tutorBox.setBounds(170, 140, 190, 20);    
+			    
+			    JLabel accout = new JLabel("Set accout");
+			    accout.setBounds(30, 170, 130, 20);
+			    JComboBox accout1 = db.getPBox("Login_Details");
+			    accout1.setBounds(170, 170, 190, 20);		    				
+
+			    JLabel degree = new JLabel("Degree");
+			    degree.setBounds(30, 200, 130, 20);				
+			    JComboBox degreeBox = db.getPBox("Degree");
+				degreeBox.setBounds(170, 200, 190, 20);
+		   
 				
 				
 				
-				JLabel registrationNum = new JLabel("Registration number:");
-				registrationNum.setBounds(30, 140, 130, 20);
-			    JTextField registrationNum1 = new JTextField();
-			    registrationNum1.setBounds(170, 140, 190, 20);
 				
-				JLabel email = new JLabel("Email address:");
-				email.setBounds(30, 170, 130, 20);
-			    JTextField email1 = new JTextField();
-			    email1.setBounds(170, 170, 190, 20);
-			    
-				JLabel address = new JLabel("Address:");
-				address.setBounds(30, 200, 130, 20);
-			    JTextField address1 = new JTextField();
-			    address1.setBounds(170, 200, 190, 20);
-			    
-				JLabel personalTutor = new JLabel("Personal tutor:");
-				personalTutor.setBounds(30, 230, 130, 20);
-			    JTextField personalTutor1 = new JTextField();
-			    personalTutor1.setBounds(170, 230, 190, 20);
-			   
 			    JButton okbtn = new JButton("Confirm");
 			    okbtn.setBounds(30, 260, 130, 20);
 			    JButton cancelbtn = new JButton("Cancel");
 			    cancelbtn.setBounds(230, 260, 130, 20);
 
 			    addStudentP.add(title);
-			    addStudentP.add(title1);
+			    addStudentP.add(titleBox);
 			    addStudentP.add(surname);
 			    addStudentP.add(surname1);
 			    addStudentP.add(forename);
 			    addStudentP.add(forename1);
 			    addStudentP.add(degree);
-			    addStudentP.add(PrivilegesBox);
-			    addStudentP.add(registrationNum);
-			    addStudentP.add(registrationNum1);
+			    addStudentP.add(degreeBox);
+			    addStudentP.add(accout);
+			    addStudentP.add(accout1);
+
 			    addStudentP.add(email);
 			    addStudentP.add(email1);
-			    addStudentP.add(address);
-			    addStudentP.add(address1);
-			    addStudentP.add(personalTutor);
-			    addStudentP.add(personalTutor1);
+
+			    addStudentP.add(tutor);
+			    addStudentP.add(tutorBox);
 			    
 			    addStudentP.add(okbtn);
 			    addStudentP.add(cancelbtn);
@@ -256,27 +316,21 @@ public class Registrars extends UserInterface{
 				okbtn.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-							try {
-								String title = title1.getText();
-							    String sName = surname1.getText();
-							    String fName = forename1.getText();
-								String regNum = registrationNum1.getText();
-							    String email = email1.getText();
-							    String add = address1.getText();
-							    String perTutor = personalTutor1.getText();
-							    
-							    String deg = (String) PrivilegesBox.getSelectedItem();
 
-							    stmt = findDriver();
-								String insertDepartments="INSERT INTO `Students` VALUES ('"+title+"','"+sName+"','"+fName+"','"+deg+"','"+regNum+"','"+email+"','"+add+"','"+perTutor+"');";
-								stmt.executeUpdate(insertDepartments);
+								
+							    String tit = (String) titleBox.getSelectedItem();
+								String sName = surname1.getText();
+							    String fName = forename1.getText();
+							    String emai = email1.getText();
+							    String tuto = (String) tutorBox.getSelectedItem();
+							    String accout = (String) accout1.getSelectedItem();
+
+							    String dee = (String)degreeBox.getSelectedItem();
+
+							    db.insertStudent(tit,sName,fName,emai,tuto,accout,dee);
 								System.out.println("Success");
-								stmt.close();
 								addStudent.dispose();
-							} catch (Exception e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
+
 
 							
 					}
@@ -287,130 +341,162 @@ public class Registrars extends UserInterface{
 						addStudent.dispose();
 					}
 				});
-		    }
-		});
-	}
-	private void registerStudent(JButton remmovebt) throws Exception {
-		remmovebt.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-//				JFrame regStudent=new JFrame("Register student");
-//				regStudent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//				regStudent.setLayout(null);
-//				regStudent.setVisible(true);
-//				
-//				JPanel regStudentP=new JPanel();
-//				regStudentP.setLayout(null);
-//				regStudentP.setBounds(0,0,300,220);
-//				
-//				JLabel label = new JLabel("Label:");
-//				label.setBounds(30, 20, 130, 20);
-//				JTextField label1 = new JTextField();
-//				label.setBounds(140, 20, 100, 20);
-//				
-//				regStudentP.add(label);
-//				regStudentP.add(label1);
-//
-//				regStudent.setLocation(900,500);
-//				regStudent.setSize(300,240);
-//			    regStudent.setVisible(true);
-//			    regStudent.add(regStudentP);
-				//new frame for adding department
-				JFrame regStudent=new JFrame("Register student");
-				regStudent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				regStudent.setLayout(null);
-				regStudent.setVisible(true);
 				
-				JPanel regStudentP=new JPanel();
-				regStudentP.setLayout(null);
-				regStudentP.setBounds(0,0,300,220);
-				
-			    JLabel label = new JLabel("Label:");
-			    label.setBounds(30, 20, 100, 20);
-			    JTextField label1 = new JTextField();
-			    label1.setBounds(140, 20, 100, 20);
-			    JLabel sDate = new JLabel("Start date:");
-			    sDate.setBounds(30, 50, 100, 20);
-			    JTextField sDate1 = new JTextField();
-			    sDate1.setBounds(140, 50, 100, 20);
-			    
-			    JLabel eDate = new JLabel("End date:");
-			    eDate.setBounds(30, 80, 100, 20);
-			    JTextField eDate1 = new JTextField();
-			    eDate1.setBounds(140, 80, 100, 20);
-			    
-			    JLabel level = new JLabel("Level of study:");
-			    level.setBounds(30, 110, 100, 20);
-			    //combo box for selecting level of study
-				JComboBox PrivilegesBox=new JComboBox();
-				PrivilegesBox.addItem("1");
-				PrivilegesBox.addItem("2");
-				PrivilegesBox.addItem("3");
-				PrivilegesBox.addItem("P");
-				PrivilegesBox.setBounds(140, 110, 100, 20);
-			    
-
-				
-			    JButton okbtn = new JButton("Confirm");
-			    okbtn.setBounds(30, 140, 80, 20);
-			    JButton cancelbtn = new JButton("Cancel");
-			    cancelbtn.setBounds(160, 140, 80, 20);
-
-			    addDegreeP.add(deeName);
-			    addDegreeP.add(deeName1);
-			    addDegreeP.add(abbCode);
-			    addDegreeP.add(abbCode1);
-			    addDegreeP.add(level);
-			    addDegreeP.add(leadDep);
-			    addDegreeP.add(leadDep1);
-
-			    addDegreeP.add(PrivilegesBox);
-
-			    addDegreeP.add(okbtn);
-			    addDegreeP.add(cancelbtn);
-			    addDegree.setLocation(900,500);
-			    addDegree.setSize(290,220);
-			    addDegree.setVisible(true);
-			    addDegree.add(addDegreeP);
-				
-				
+				}
+				catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
-	
 	}
-	private void removeItem(JButton remmovebt, JTable table,String compName) {
+	private void registerStudent(JButton remmovebt,JTable table) throws Exception {
 		remmovebt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int selected = table.getSelectedRow();
-				if(selected == -1)
-					JOptionPane.showMessageDialog(null, "No degree selected, select an degree.", "Error",JOptionPane.WARNING_MESSAGE);  
+				
+				if(selected != -1) {
+					int degId =  Integer.parseInt((String) table.getValueAt(selected,0));
 
-				else {	
-				String getname= table.getValueAt(selected, 4).toString();
-				try {
-				stmt = findDriver();
-				
-				System.out.print(getname);	
-				String removeName;
-				
-				
-					removeName= "DELETE FROM "+compName+" WHERE `Registration number` = '"+getname+"'"; 
-					System.out.print(removeName);
-				
-				
-				stmt.executeUpdate(removeName);
-				stmt.close();
+				if(db.getCurrentCredit(degId)==db.getRequireCredit(degId)) {
+					try {
+					JFrame regStudent=new JFrame("Register student");
+					regStudent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+					regStudent.setLayout(null);
+					regStudent.setVisible(true);
+	
+					JPanel regStudentP=new JPanel();
+					regStudentP.setLayout(null);
+					regStudentP.setBounds(0,0,500,220);
+					
+					JLabel sDate = new JLabel("Start date(YYYY/MM/DD):");
+	
+			        String[] listData = new String[]{"2018", "2019", "2020", "2021","2022","2023","2024","2025"};
+			        final JComboBox<String> startYear = new JComboBox<String>(listData);
+			        startYear.setBounds(250, 20, 60, 20);
+			        String[] listData2= new String[]{"01", "02", "03", "04","05", "06", "07","08", "09", "10","11", "12"};
+			        final JComboBox<String> startMonth = new JComboBox<String>(listData2);
+			        startMonth.setBounds(310, 20, 60, 20);
+			        String[] listData3 = new String[]{"01", "02", "03", "04","05", "06", "07","08", "09", "10","11", "12"+
+			        		"13", "14", "15", "16","17", "18", "19","20", "21", "22","23", "24", "25","26", "27", "28","29", "30", "31"};
+			        final JComboBox<String> startDay = new JComboBox<String>(listData3);
+			        startDay.setBounds(370, 20, 60, 20);	
+					
+					JLabel eDate = new JLabel("End date:");
+			        String[] listData4 = new String[]{"2018", "2019", "2020", "2021","2022","2023","2024","2025"};
+			        final JComboBox<String> endYear = new JComboBox<String>(listData4);
+			        endYear.setBounds(250, 50, 60, 20);
+			        String[] listData5= new String[]{"01", "02", "03", "04","05", "06", "07","08", "09", "10","11", "12"};
+			        final JComboBox<String> endMonth = new JComboBox<String>(listData5);
+			        endMonth.setBounds(310, 50, 60, 20);
+			        String[] listData6 = new String[]{"01", "02", "03", "04","05", "06", "07","08", "09", "10","11", "12"+
+			        		"13", "14", "15", "16","17", "18", "19","20", "21", "22","23", "24", "25","26", "27", "28","29", "30", "31"};
+			        final JComboBox<String> endDay = new JComboBox<String>(listData6);
+			        endDay.setBounds(370, 50, 60, 20);
+	
+	
+					sDate.setBounds(30, 20, 220, 20);
+					eDate.setBounds(30, 50, 220, 20);
+					
+					
+					JLabel label = new JLabel("Label:");
+					label.setBounds(30, 80, 220, 20);
+	
+					String[] listData7 = new String[]{"A", "B", "C", "D","E", "F", "G","H", "I", "J","K", "L"};
+			        final JComboBox<String> labelBox = new JComboBox<String>(listData7);
+			        labelBox.setBounds(250, 80, 60, 20);
+					
+					JLabel level = new JLabel("Level of Study:");
+					level.setBounds(30, 110, 220, 20);
+			        
+			       				
+					JComboBox levelBox = db.getPBox("Level_of_Study");
+	
+					levelBox.setBounds(250, 110, 60, 20);
+	
+					
+					regStudentP.add(sDate);
+					
+					regStudentP.add(startYear);
+					regStudentP.add(startMonth);
+					regStudentP.add(startDay);
+					regStudentP.add(endYear);
+					regStudentP.add(endMonth);
+					regStudentP.add(endDay);
+					regStudentP.add(eDate);
+					regStudentP.add(labelBox);
+					regStudentP.add(label);
+					
+					regStudentP.add(levelBox);
+					regStudentP.add(level);
+					
+					
+					JLabel currentCredit = new JLabel("Your current credit:"+db.getCurrentCredit(degId));
+					currentCredit.setBounds(30, 140, 220, 20);
+					JLabel requireCredit = new JLabel("Your required credit:"+db.getRequireCredit(degId));
+					requireCredit.setBounds(250, 140, 220, 20);
+					
+					
+					
+					 
+				    JButton okbtn = new JButton("Confirm");
+				    okbtn.setBounds(330, 170, 80, 20);
+				    JButton cancelbtn = new JButton("Cancel");
+				    cancelbtn.setBounds(160, 170, 80, 20);
+	
+	
+				    regStudentP.add(currentCredit);
+				    regStudentP.add(requireCredit);
+	
+				    regStudentP.add(okbtn);
+				    regStudentP.add(cancelbtn);
+				    regStudent.setLocation(900,500);
+				    regStudent.setSize(500,240);
+				    regStudent.setVisible(true);
+				    regStudent.add(regStudentP);
+				    okbtn.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+	
+							
+							String startDate = (String) startYear.getSelectedItem()+"-"+(String) startMonth.getSelectedItem()+"-"+startDay.getSelectedItem();
+							String endDate = (String) endYear.getSelectedItem()+"-"+(String) endMonth.getSelectedItem()+"-"+endDay.getSelectedItem();
+							char label = ((String) labelBox.getSelectedItem()).charAt(0);
+							String level = (String) levelBox.getSelectedItem();
+							System.out.print(startDate);
+							db.registerStudent(startDate, endDate,label, level,degId);
+							System.out.println("Success");
+							regStudent.dispose();
+								
+								
+						}
+					});
+					cancelbtn.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							regStudent.dispose();
+						}
+					});
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+				else {
+					String mess = "Your current credits is "+db.getCurrentCredit(degId)+", your required credits is "+db.getRequireCredit(degId)+
+							", you should choose one or more optional module.";
+					JOptionPane.showMessageDialog(null, mess, "No data",JOptionPane.INFORMATION_MESSAGE);
 
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
 				}
 				}
+				else
+					JOptionPane.showMessageDialog(null, "You must select a student!", "No data",JOptionPane.INFORMATION_MESSAGE);
 			}
-			});
-		
+		});
+	
 	}
+
 	//navigation attribute set up
 	public void navAttribute(JButton bt) {
 		bt.setForeground(Color.WHITE);
@@ -428,12 +514,4 @@ public class Registrars extends UserInterface{
 		main.updateUI();
 	}
 	
-	private Vector getNextRow(ResultSet rs,ResultSetMetaData rsmd) throws SQLException{
-		Vector currentRow=new Vector();
-		for(int i=1;i<=rsmd.getColumnCount();i++){
-			currentRow.addElement(rs.getString(i));
-		}
-		return currentRow;
-	}
-
 }

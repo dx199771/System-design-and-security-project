@@ -2,29 +2,31 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="addDegree" key="selection"/>
-		<item value="false" key="casesensitive"/>
+		<item value="" key="selection"/>
+		<item value="true" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
-		<item value="false" key="wholeword"/>
+		<item value="true" key="wholeword"/>
 		<list key="findhistory">
-			<item value="addDegree"/>
-			<item value="removeItem"/>
-			<item value="checkB"/>
+			<item value="re"/>
+			<item value="reg"/>
+			<item value="regi"/>
+			<item value="regis"/>
+			<item value="regist"/>
 			<item value="linkMod"/>
-			<item value="checkBox"/>
-			<item value="box"/>
-			<item value="Box"/>
-			<item value="getSelec"/>
-			<item value="JComboBox"/>
+			<item value="JCheckBox"/>
 			<item value="linkDee"/>
+			<item value="int"/>
+			<item value="inte"/>
 			<item value="insertDee"/>
-			<item value="accounts"/>
-			<item value="displayTable"/>
-			<item value="link"/>
-			<item value="linkDegree"/>
+			<item value="fulname"/>
+			<item value="fullName"/>
+			<item value="insertDepa"/>
+			<item value="insertAccount"/>
 		</list>
 		<list key="replacehistory">
+			<item value="fullname"/>
+			<item value="fulname"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">

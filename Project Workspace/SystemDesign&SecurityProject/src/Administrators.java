@@ -142,7 +142,7 @@ public class Administrators extends UserInterface{
 			public void actionPerformed(ActionEvent e) {
 				//new frame for adding account
 				JFrame addAccount=new JFrame("Add account");
-				addAccount.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				addAccount.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				addAccount.setLayout(null);
 				addAccount.setVisible(true);
 				
@@ -195,8 +195,16 @@ public class Administrators extends UserInterface{
 								String accName = accName1.getText();
 							    String password = password1.getText();
 							    String privil = (String) PrivilegesBox.getSelectedItem();
-								
-								db.insertAccount(accName,password,privil);
+								int privilInt = 0;
+								if(privil=="Administrator")
+									privilInt= 1;
+								else if(privil=="Registrar")
+									privilInt= 2;
+								else if(privil=="Teacher")
+									privilInt= 3;
+								else if(privil=="Student")
+									privilInt= 4;
+								db.insertAccount(accName,password,privilInt);
 								System.out.println("Success added one user");
 								addAccount.dispose();
 							} catch (Exception e1) {
@@ -222,7 +230,7 @@ public class Administrators extends UserInterface{
 			public void actionPerformed(ActionEvent e) {
 				//new frame for adding department
 				JFrame addDepartment=new JFrame("Add department");
-				addDepartment.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				addDepartment.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				addDepartment.setLayout(null);
 				addDepartment.setVisible(true);
 				
@@ -238,11 +246,7 @@ public class Administrators extends UserInterface{
 			    abbCode.setBounds(30, 70, 100, 20);
 			    JTextField abbCode1 = new JTextField();
 			    abbCode1.setBounds(140, 70, 100, 20);
-
-			    
-			    
-
-				
+		
 			    JButton okbtn = new JButton("Confirm");
 			    okbtn.setBounds(30, 140, 80, 20);
 			    JButton cancelbtn = new JButton("Cancel");
@@ -287,7 +291,7 @@ public class Administrators extends UserInterface{
 			public void actionPerformed(ActionEvent e) {
 				//new frame for adding department
 				JFrame addDegree=new JFrame("Add degree");
-				addDegree.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				addDegree.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				addDegree.setLayout(null);
 				addDegree.setVisible(true);
 				
@@ -303,29 +307,26 @@ public class Administrators extends UserInterface{
 			    abbCode.setBounds(30, 50, 100, 20);
 			    JTextField abbCode1 = new JTextField();
 			    abbCode1.setBounds(140, 50, 100, 20);
-			    
-			    JLabel leadDep = new JLabel("Lead department:");
-			    leadDep.setBounds(30, 80, 100, 20);
-			    JTextField leadDep1 = new JTextField();
-			    leadDep1.setBounds(140, 80, 100, 20);
+			    try {
+			    JLabel enDep = new JLabel("Entry:");
+			    enDep.setBounds(30, 80, 100, 20);
+			    JComboBox entry = new JComboBox();
+			    entry.addItem("U");
+			    entry.addItem("P");
+			    entry.setBounds(140, 80, 100, 20);
 			    
 
 			    
-			    JLabel level = new JLabel("Years:");
+			    JLabel level = new JLabel("Level:");
 			    level.setBounds(30, 110, 100, 20);
 			    //combo box for selecting level of study
-				JComboBox PrivilegesBox=new JComboBox();
-				PrivilegesBox.addItem("1");
-				PrivilegesBox.addItem("2");
-				PrivilegesBox.addItem("3");
-				PrivilegesBox.addItem("4");
-				PrivilegesBox.addItem("P");
-				PrivilegesBox.setBounds(140, 110, 100, 20);
+				
+				JComboBox studyId = db.getPBox("Level_of_Study");
+				
+
+				studyId.setBounds(140, 110, 100, 20);
 			    
-			    JLabel industry = new JLabel("Year in industry:");
-			    industry.setBounds(30, 140, 100, 20);
-			    JCheckBox industry1 = new JCheckBox();
-			    industry1.setBounds(140, 140, 100, 20);
+
 				
 			    JButton okbtn = new JButton("Confirm");
 			    okbtn.setBounds(30, 170, 80, 20);
@@ -337,12 +338,11 @@ public class Administrators extends UserInterface{
 			    addDegreeP.add(abbCode);
 			    addDegreeP.add(abbCode1);
 			    addDegreeP.add(level);
-			    addDegreeP.add(leadDep);
-			    addDegreeP.add(leadDep1);
+			    addDegreeP.add(enDep);
+			    addDegreeP.add(entry);
 
-			    addDegreeP.add(PrivilegesBox);
-			    addDegreeP.add(industry);
-			    addDegreeP.add(industry1);
+			    addDegreeP.add(studyId);
+
 
 			    addDegreeP.add(okbtn);
 			    addDegreeP.add(cancelbtn);
@@ -356,10 +356,11 @@ public class Administrators extends UserInterface{
 							try {
 								String deeName = deeName1.getText();
 							    String abbCode = abbCode1.getText();
-							    String level = (String) PrivilegesBox.getSelectedItem();
-							    Boolean selected =industry1.isSelected();
+							    char entry1 = ((String) entry.getSelectedItem()).charAt(0);
 
-								db.insertDee(deeName,abbCode,level,selected);
+							    String level = (String) studyId.getSelectedItem();
+
+								db.insertDee(deeName,abbCode,entry1,level);
 								addDegree.dispose();
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
@@ -375,10 +376,100 @@ public class Administrators extends UserInterface{
 						addDegree.dispose();
 					}
 				});
+				} catch (SQLException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
 		    }
 		});
 	}
+	private void addModu(JButton addButton) {
+		addButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//new frame for adding department
+				JFrame addModule=new JFrame("Add module");
+				addModule.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				addModule.setLayout(null);
+				addModule.setVisible(true);
+				
+				JPanel addModuleP=new JPanel();
+				addModuleP.setLayout(null);
+				addModuleP.setBounds(0,0,290,250);
+				
+			    JLabel depName = new JLabel("Full name:");
+			    depName.setBounds(30, 40, 100, 20);
+			    JTextField depName1 = new JTextField();
+			    depName1.setBounds(140, 40, 100, 20);
+			    JLabel abbCode = new JLabel("Abbreviated code:");
+			    abbCode.setBounds(30, 70, 100, 20);
+			    JTextField abbCode1 = new JTextField();
+			    abbCode1.setBounds(140, 70, 100, 20);
+		
+			    
+			    try {
+			    JLabel abbCre = new JLabel("Credits:");
+			    abbCre.setBounds(30, 100, 100, 20);
+			     
+				
+				JComboBox abbCre1 = db.getPBox("Credits");
+				abbCre1.setBounds(140, 100, 100, 20);
+			    
+			    JLabel time = new JLabel("Time:");
+			    time.setBounds(30, 130, 100, 20);
+				JComboBox time1 = db.getPBox("Teaching_Time");
+				time1.setBounds(140, 130, 100, 20);
+			    
+			    
+			    JButton okbtn = new JButton("Confirm");
+			    okbtn.setBounds(30, 160, 80, 20);
+			    JButton cancelbtn = new JButton("Cancel");
+			    cancelbtn.setBounds(160, 160, 80, 20);
 
+			    addModuleP.add(depName);
+			    addModuleP.add(depName1);
+			    addModuleP.add(abbCode);
+			    addModuleP.add(abbCode1);
+			    addModuleP.add(abbCre);
+			    addModuleP.add(abbCre1);
+			    addModuleP.add(time);
+			    addModuleP.add(time1);
+			    
+			    addModuleP.add(okbtn);
+			    addModuleP.add(cancelbtn);
+			    addModule.setLocation(900,500);
+			    addModule.setSize(290,250);
+			    addModule.setVisible(true);
+			    addModule.add(addModuleP);
+				okbtn.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+							try {
+								String modName = depName1.getText();
+							    String abbCode = abbCode1.getText();
+							    int cre = Integer.parseInt((String)abbCre1.getSelectedItem());
+							    String time = (String)time1.getSelectedItem();
+
+								db.insertModule(modName, abbCode,cre,time);
+								addModule.dispose();
+							} catch (Exception e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}							
+					}
+				});
+				cancelbtn.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						addModule.dispose();
+					}
+				});
+				}catch (SQLException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+		    }
+		});
+	}
 	private void removeItem(JButton remmovebt, JTable table,String compName) {
 		remmovebt.addActionListener(new ActionListener() {
 			@Override
@@ -398,20 +489,17 @@ public class Administrators extends UserInterface{
 		remmovebt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JComboBox depBox = null;
 
 				int selected = table.getSelectedRow();
-				try {
-					depBox = db.getPBox("department");
-				} catch (SQLException e3) {
-					// TODO Auto-generated catch block
-					e3.printStackTrace();
-				}
+
 
 				if(selected != -1) {
+					try {
+				int degId =  Integer.parseInt((String) table.getValueAt(selected,0));
+
 				//new frame for linking degree
 				JFrame linkDegree=new JFrame("Link degree");
-				linkDegree.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				linkDegree.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				linkDegree.setLayout(null);
 				linkDegree.setVisible(true);
 				
@@ -419,70 +507,67 @@ public class Administrators extends UserInterface{
 				linkDegreeP.setLayout(null);
 				linkDegreeP.setBounds(0,0,300,220);
 				
-			    JLabel depName = new JLabel("Lead department name:");
-			    depName.setBounds(30, 20, 130, 20);
+
+			    
+			    
 			    JLabel leadepName = new JLabel("Department name:");
-			    leadepName.setBounds(30, 50, 130, 20);
-			    depBox.setBounds(170, 50, 130, 20);
+			    leadepName.setBounds(30, 20, 130, 20);
+				JComboBox depBox = db.getPBox("Department");
+			    depBox.setBounds(170, 20, 130, 20);
+			    
+			    JLabel depName = new JLabel("Lead department?:");
+			    depName.setBounds(30, 50, 130, 20);
+			    JCheckBox lead = new JCheckBox();
+			    lead.setBounds(170, 50, 130, 20);
 			    //combo box for selecting level of study
+
+				JButton okbtn = new JButton("Link");
+				okbtn.setBounds(30, 140, 80, 20);
+				JButton cancelbtn = new JButton("Cancel");
+				cancelbtn.setBounds(220, 140, 80, 20);
+
+				linkDegreeP.add(depName);
 			    linkDegreeP.add(depBox);
 			    linkDegreeP.add(leadepName);
+			    linkDegreeP.add(lead);
+				linkDegreeP.add(okbtn);
+				linkDegreeP.add(cancelbtn);
+				linkDegree.setLocation(900,500);
+				linkDegree.setSize(350,220);
+				linkDegree.setVisible(true);
+				linkDegree.add(linkDegreeP);
+				okbtn.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
 
-				JComboBox PrivilegesBox;
-				try {
-					final String lead = (String)depBox.getSelectedItem();
-					PrivilegesBox = db.getPBox("department");
-					PrivilegesBox.setBounds(170, 20, 130, 20);
-					linkDegreeP.add(PrivilegesBox);
-					int degId =  Integer.parseInt((String) table.getValueAt(selected,0));
-					String yearS = (String) table.getValueAt(selected,3);
-
-
-				    JButton okbtn = new JButton("Link");
-				    okbtn.setBounds(30, 140, 80, 20);
-				    JButton cancelbtn = new JButton("Cancel");
-				    cancelbtn.setBounds(220, 140, 80, 20);
-
-				    linkDegreeP.add(depName);
-
-
-				    linkDegreeP.add(okbtn);
-				    linkDegreeP.add(cancelbtn);
-				    linkDegree.setLocation(900,500);
-				    linkDegree.setSize(350,220);
-				    linkDegree.setVisible(true);
-				    linkDegree.add(linkDegreeP);
-					okbtn.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-
-
-								    String level = (String) PrivilegesBox.getSelectedItem();
-								    try {
-										db.linkDee(degId, level,lead);
-									} catch (SQLException e1) {
-										// TODO Auto-generated catch block
-										e1.printStackTrace();
-									}
-									System.out.println("Success");
-									linkDegree.dispose();
-								
-								
+						boolean lead1 = lead.isSelected();
+						String level = (String) depBox.getSelectedItem();
+						try {
+							db.linkDee(degId, level,lead1);
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
 						}
-					});
-					cancelbtn.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							linkDegree.dispose();
-						}
-					});
+						System.out.println("Success");
+						linkDegree.dispose();
+							
+							
+					}
+				});
+				cancelbtn.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						linkDegree.dispose();
+					}
+				});
 				} catch (SQLException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
 				}
 				}
+				
 				else
-					JOptionPane.showMessageDialog(null, "You must select a deegre!", "No data",JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "You must select a degree!", "No data",JOptionPane.INFORMATION_MESSAGE);
 
 			}
 			});
@@ -492,84 +577,67 @@ public class Administrators extends UserInterface{
 		remmovebt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JComboBox deeBox = null;
 				int selected = table.getSelectedRow();
-				int degId =  Integer.parseInt((String) table.getValueAt(selected,0));
+
+
+				if(selected != -1) {
+					int modId =  Integer.parseInt((String) table.getValueAt(selected,0));
 
 				try {
-					deeBox = db.getPBox("degree");
-				} catch (SQLException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				}
-				
-				if(selected != -1) {
+				//new frame for linking degree
 				JFrame linkMod=new JFrame("Link module");
-				linkMod.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				linkMod.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				linkMod.setLayout(null);
 				linkMod.setVisible(true);
+				
 				JPanel linkModP=new JPanel();
 				linkModP.setLayout(null);
-				linkModP.setBounds(0,0,350,220);
+				linkModP.setBounds(0,0,300,220);
 				
-				JLabel deeName = new JLabel("Degree name:");
-				deeName.setBounds(30, 30, 130, 20);	
 
-				deeBox.setBounds(170, 30, 130, 20);
-				
-				JLabel credits = new JLabel("Credits:");
-				credits.setBounds(30, 60, 130, 20);
-				JTextField credits1 =new JTextField();
-				credits1.setBounds(170, 60, 130, 20);
+			    
+			    
+			    JLabel leadeeName = new JLabel("Degree name:");
+			    leadeeName.setBounds(30, 20, 130, 20);
+				JComboBox deeBox = db.getPBox("Degree");
+				deeBox.setBounds(170, 20, 130, 20);
+			    
+			    JLabel deeName = new JLabel("Core:");
+			    deeName.setBounds(30, 50, 130, 20);
+			    JCheckBox core = new JCheckBox();
+			    core.setBounds(170, 50, 130, 20);
+			    //combo box for selecting level of study
 
-				JLabel term = new JLabel("Term:");
-				term.setBounds(30, 90, 130, 20);
-				JComboBox term1=new JComboBox();
-				term1.addItem("Autumn");
-				term1.addItem("Spring");
-				term1.addItem("Year");
-				term1.setBounds(170, 90, 130, 20);
-				String name = (String)deeBox.getSelectedItem();
-
-				JLabel core = new JLabel("Core:");
-				core.setBounds(30, 120, 130, 20);
-				JCheckBox core1 = new JCheckBox();
-				core1.setBounds(170, 120, 130, 20);
-				
 				JButton okbtn = new JButton("Link");
-			    okbtn.setBounds(30, 150, 80, 20);
-			    JButton cancelbtn = new JButton("Cancel");
-			    cancelbtn.setBounds(220, 150, 80, 20);
+				okbtn.setBounds(30, 140, 80, 20);
+				JButton cancelbtn = new JButton("Cancel");
+				cancelbtn.setBounds(220, 140, 80, 20);
 
-			    linkModP.add(deeName);
-			    linkModP.add(deeBox);
-			    linkModP.add(credits);
-			    linkModP.add(credits1);
-			    linkModP.add(term);
-			    linkModP.add(term1);
+				linkModP.add(deeName);
+				linkModP.add(deeBox);
+			    linkModP.add(leadeeName);
 			    linkModP.add(core);
-			    linkModP.add(core1);
 			    linkModP.add(okbtn);
-			    linkModP.add(cancelbtn);
-			    linkMod.setLocation(900,500);
-			    linkMod.setSize(350,220);
-			    linkMod.setVisible(true);
-			    linkMod.add(linkModP);
+				linkModP.add(cancelbtn);
+				linkMod.setLocation(900,500);
+				linkMod.setSize(350,220);
+				linkMod.setVisible(true);
+				linkMod.add(linkModP);
 			    okbtn.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 
-						String cre = credits1.getText();
-						String term = (String) term1.getSelectedItem();
-						boolean core = core1.isSelected();
+						String level = (String) deeBox.getSelectedItem();
+						boolean core1 = core.isSelected();
 						try {
-							db.linkMod(degId,name, cre, term,core);
+							db.linkMod(modId, level,core1);
 						} catch (SQLException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 						System.out.println("Success");
-						linkMod.dispose();			
+						linkMod.dispose();
+									
 					}
 				});
 				cancelbtn.addActionListener(new ActionListener() {
@@ -578,6 +646,10 @@ public class Administrators extends UserInterface{
 						linkMod.dispose();
 					}
 				});
+				} catch (SQLException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
 				}
 				else
 					JOptionPane.showMessageDialog(null, "You must select a module!", "No data",JOptionPane.INFORMATION_MESSAGE);
@@ -587,7 +659,7 @@ public class Administrators extends UserInterface{
 	}
 	public void accounts(JPanel main,JFrame frame) throws Exception {
 
-		String role ="accounts";
+		String role ="Login_Details";
 		JTable table = db.displayTable(role);
 		JScrollPane jsp= new JScrollPane(table);
 		jsp.setSize(new Dimension(1577, 588));
@@ -597,7 +669,7 @@ public class Administrators extends UserInterface{
 		addAccounts.setBounds(0,738, 200, 50);
 		removeAccounts.setBounds(250,738, 200, 50);
 		//event listener
-		String itemName = "accounts";
+		String itemName = "Login_Details";
 		addAccount(addAccounts);
 		removeItem(removeAccounts,table, itemName);
 
@@ -611,7 +683,7 @@ public class Administrators extends UserInterface{
 	}
 	public void departments(JPanel main,JFrame frame) throws Exception {
 		
-		String role ="department";
+		String role ="Department";
 		JTable table = db.displayTable(role);
 		JScrollPane jsp= new JScrollPane(table);
 
@@ -621,7 +693,7 @@ public class Administrators extends UserInterface{
 		JButton addDepartmentsB= new JButton("Add department");
 		addDepartmentsB.setBounds(0,738, 200, 50);
 		removeDepartments.setBounds(250,738, 200, 50);
-		String itemName = "department";
+		String itemName = "Department";
 
 		addDepartment(addDepartmentsB);
 		removeItem(removeDepartments,table, itemName);
@@ -636,7 +708,7 @@ public class Administrators extends UserInterface{
 	}
 	public void degrees(JPanel main,JFrame frame) throws Exception {
 		
-		String role ="degree";
+		String role ="Degree";
 		JTable table = db.displayTable(role);
 		JScrollPane jsp= new JScrollPane(table);
 
@@ -652,7 +724,7 @@ public class Administrators extends UserInterface{
 		
 		linkDegree(linkDegrees,table);
 		addDegree(addDegrees);
-		String itemName = "degree";
+		String itemName = "Degree";
 		removeItem(removeDegrees,table, itemName);
 
 		main.setBounds(343,146, 1577, 788);
@@ -665,7 +737,7 @@ public class Administrators extends UserInterface{
 	}
 	public void modules(JPanel main,JFrame frame) throws Exception {		
 		
-		String role ="module";
+		String role ="Module";
 		JTable table = db.displayTable(role);
 		JScrollPane jsp= new JScrollPane(table);
 
@@ -680,8 +752,8 @@ public class Administrators extends UserInterface{
 		linkMod.setBounds(500,738, 200, 50);
 		
 		linkMod(linkMod,table);
-		addDegree(addMod);
-		String itemName = "module";
+		addModu(addMod);
+		String itemName = "Module";
 		removeItem(removeMod,table, itemName);
 		
 		main.setBounds(343,146, 1577, 788);

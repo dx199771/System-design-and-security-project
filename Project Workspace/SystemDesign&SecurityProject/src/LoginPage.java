@@ -85,30 +85,30 @@ public class  LoginPage{
 							Host, UserName, PassWord)){
 						stmt = con.createStatement();
 
-					String rsString = "select `permissions` from `accounts` where `username`='"+userNameTF.getText()+"' and `password`='"+passwordTF.getText()+"'";
+					String rsString = "select `pivilegeID` from `Login_Details` where `username`='"+userNameTF.getText()+"' and `password`='"+passwordTF.getText()+"'";
 					rs = stmt.executeQuery(rsString);
 
 					if(rs.next()) {
-						if(rs.getString("permissions").equals("Administrator")) {
+						if(rs.getString("pivilegeID").equals("1")) {
 							Privileges = "Administrator";
 							
 							Administrators admin = new Administrators();
 							admin.adminPage(getUserName(),getPriviliges());
 							frame.dispose();
 							}
-							else if(rs.getString("permissions").equals("Registrar")){
+							else if(rs.getString("pivilegeID").equals("2")){
 							Privileges = "Registrar";
 						    Registrars regis = new Registrars();
 						    regis.registarPage(getUserName(),getPriviliges());
 							frame.dispose();
 							}
-							else if(rs.getString("permissions").equals("Teacher")){
+							else if(rs.getString("pivilegeID").equals("3")){
 							Privileges = "Teacher";
 							//Teachers teacher = new Teachers(getUserName(),getPriviliges());
 							//teacher.teacherPage();
 							frame.dispose();
 							}
-							else if(rs.getString("Privileges").equals("Student")){
+							else if(rs.getString("pivilegeID").equals("4")){
 							Privileges = "Student";
 							//Students student = new Students(getUserName(),getPriviliges());
 							//student.studentPage();
