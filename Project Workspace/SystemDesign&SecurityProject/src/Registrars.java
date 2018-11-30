@@ -117,9 +117,12 @@ public class Registrars extends UserInterface{
 		optional.setBounds(750,738, 200, 50);
 
 		registerStudent(regStudent,table);
+		String itemName = "Student";
 
 		addStudent(addStudents);
 		optionalModule(optional,table);
+		removeItem(removeStudent,table,itemName);
+		
 		main.setBounds(343,146, 1577, 788);
 		main.setVisible(true); 
 		main.add(addStudents);
@@ -189,7 +192,8 @@ public class Registrars extends UserInterface{
 				add.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-
+						String mod = (String) allMod.getSelectedItem();
+						db.addOptional(degId,mod);
 						String mess = "You have added one optional module"+", current credits: "+ db.getCurrentCredit(degId);
 						JOptionPane.showMessageDialog(null, mess, "No data",JOptionPane.INFORMATION_MESSAGE);
 
@@ -198,7 +202,8 @@ public class Registrars extends UserInterface{
 				drop.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-
+						String mod = (String) allMod1.getSelectedItem();
+						db.dropOptional(degId,mod);
 						String mess = "You have dropped one optional module"+", current credits: "+ db.getCurrentCredit(degId);
 
 						JOptionPane.showMessageDialog(null, mess, "No data",JOptionPane.INFORMATION_MESSAGE);
@@ -497,21 +502,6 @@ public class Registrars extends UserInterface{
 	
 	}
 
-	//navigation attribute set up
-	public void navAttribute(JButton bt) {
-		bt.setForeground(Color.WHITE);
-		bt.setFont(new Font("Dialog", Font.PLAIN, 16));
-		bt.setPreferredSize(new Dimension(120,50));
-		bt.setContentAreaFilled(false);
-		bt.setBorderPainted(false);
-		bt.setFocusPainted(false);
-		//profile.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\pb.png"));			
-	}
-	
-	public void updateJSwing(JPanel main) {
-		main.removeAll();
-		main.repaint();
-		main.updateUI();
-	}
+
 	
 }

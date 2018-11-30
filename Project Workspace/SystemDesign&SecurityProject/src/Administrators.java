@@ -470,21 +470,6 @@ public class Administrators extends UserInterface{
 		    }
 		});
 	}
-	private void removeItem(JButton remmovebt, JTable table,String compName) {
-		remmovebt.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int selected = table.getSelectedRow();
-				if(selected == -1)
-					JOptionPane.showMessageDialog(null, "No degree selected, select an degree.", "Error",JOptionPane.WARNING_MESSAGE);  
-
-				else {	
-				int getNumber= Integer.parseInt( (String) table.getValueAt(selected, 0));
-				db.removeItem(compName, getNumber);
-				}
-			}
-		});
-	}
 	private void linkDegree(JButton remmovebt,JTable table) throws Exception {
 		remmovebt.addActionListener(new ActionListener() {
 			@Override
@@ -763,23 +748,9 @@ public class Administrators extends UserInterface{
 		main.add(linkMod);
 		main.add(jsp);	
 	}
-	//navigation attribute set up
-	public void navAttribute(JButton bt) {
-		bt.setForeground(Color.WHITE);
-		bt.setFont(new Font("Dialog", Font.PLAIN, 16));
-		bt.setPreferredSize(new Dimension(120,50));
-		bt.setContentAreaFilled(false);
-		bt.setBorderPainted(false);
-		bt.setFocusPainted(false);
-		//profile.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\pb.png"));			
-	}
+
 	
-	//update UI
-	public void updateJSwing(JPanel main) {
-		main.removeAll();
-		main.repaint();
-		main.updateUI();
-	}
+
 	
 
 	

@@ -8,21 +8,21 @@
 		<item value="true" key="wrap"/>
 		<item value="true" key="wholeword"/>
 		<list key="findhistory">
-			<item value="re"/>
-			<item value="reg"/>
-			<item value="regi"/>
-			<item value="regis"/>
-			<item value="regist"/>
-			<item value="linkMod"/>
-			<item value="JCheckBox"/>
-			<item value="linkDee"/>
-			<item value="int"/>
+			<item value="Int"/>
+			<item value="Inte"/>
+			<item value="Inter"/>
 			<item value="inte"/>
-			<item value="insertDee"/>
-			<item value="fulname"/>
-			<item value="fullName"/>
-			<item value="insertDepa"/>
-			<item value="insertAccount"/>
+			<item value="interger"/>
+			<item value="removeItem"/>
+			<item value=""/>
+			<item value="r"/>
+			<item value="re"/>
+			<item value="rem"/>
+			<item value="remo"/>
+			<item value="remove"/>
+			<item value="DELETE"/>
+			<item value="delete"/>
+			<item value="modId"/>
 		</list>
 		<list key="replacehistory">
 			<item value="fullname"/>

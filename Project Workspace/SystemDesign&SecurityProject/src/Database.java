@@ -57,6 +57,21 @@ public class Database {
 				}	
 			}	
 		}
+		else if(role == "Student") {
+			String sql ="SELECT `regID` from "+role+";";
+			ResultSet depRs = stmt.executeQuery(sql);
+			if(!(depRs.next()))
+			{
+			   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
+			}
+			else {
+				DepBox.addItem(depRs.getInt("regID"));
+
+				while(depRs.next()) {
+					DepBox.addItem(depRs.getInt("regID"));
+				}	
+			}	
+		}
 		else if(role == "Teaching_Time") {
 			String sql ="SELECT `time` from "+role+";";
 			ResultSet depRs = stmt.executeQuery(sql);
@@ -118,6 +133,10 @@ public class Database {
 			removeName= "DELETE FROM "+compName+" WHERE `modID` = '"+getname+"'"; 
 		System.out.print(removeName);
 
+		}else if(compName == "Student"){
+			removeName= "DELETE FROM "+compName+" WHERE `regID` = '"+getname+"'"; 
+		System.out.print(removeName);
+
 		}
 		stmt.executeUpdate(removeName);
 		}
@@ -170,6 +189,9 @@ public class Database {
 
 			String insertDee="INSERT INTO `Module_Degree_Link` (`degID`,`modID`,`core`) VALUES ('"+deeId+"','"+modId+"','"+core1+"');";
 			
+			if(name.substring(0,3).equals("MSc") && core== false )
+				JOptionPane.showMessageDialog(null, "Msc degree should be all core.", "No data",JOptionPane.INFORMATION_MESSAGE);
+			else
 			stmt.executeUpdate(insertDee);
 		
 		}
@@ -224,6 +246,44 @@ public class Database {
 			ex.printStackTrace();
 		}
 	}
+	public void insertGrade(String mod, Integer stu, int grade) {
+		try(Connection con =DriverManager.getConnection(
+				Host, UserName, PassWord)){		
+			stmt = con.createStatement();
+			String modId = "SELECT `modID` FROM `Module` WHERE `fullname` = '"+mod+"';";
+			ResultSet modIdRs = stmt.executeQuery(modId);
+			int modId1 = 0;
+			while(modIdRs.next()) {
+				modId1 = modIdRs.getInt(1);
+			}
+			
+
+			String insertGrade="INSERT INTO `Student_Grades` (`modID`,`regID`,`initialGrade`) VALUES ('"+modId1+"','"+stu+"','"+grade+"');";
+			stmt.executeUpdate(insertGrade);
+
+		}
+		catch (SQLException ex) {    
+			ex.printStackTrace();
+		}
+	}
+	public void updateGrade(String type, int grade, int regId, int modId) {
+		try(Connection con =DriverManager.getConnection(
+				Host, UserName, PassWord)){		
+			stmt = con.createStatement();
+			
+			String update = null;
+			if(type.equals("Resit Grade"))
+				update = "UPDATE `Student_Grades` SET `resitGrade` = '"+grade+"' WHERE `modID` = '"+modId+"' AND `regID` = '"+regId+"';";
+			else
+				update = "UPDATE `Student_Grades` SET `resitGrade` = '"+grade+"' WHERE `modID` = '"+modId+"' AND `regID` = '"+regId+"';";
+
+			stmt.executeUpdate(update);
+			
+		}
+		catch (SQLException ex) {    
+			ex.printStackTrace();
+		}
+	}
 	public void insertModule (String modName,String abbCode,int cre, String time) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
@@ -243,6 +303,20 @@ public class Database {
 		}
 		String insertModule="INSERT INTO `Module` (`fullname`,`code`,`creditID`,`timeID`) VALUES ('"+modName+"','"+abbCode+"','"+creIdRs1+"','"+timeIdRs1+"');";
 		stmt.executeUpdate(insertModule);
+		}
+		catch (SQLException ex) {    
+			ex.printStackTrace();
+		}
+	}
+	public void insertStudentMod (int mod,int regId) throws SQLException {
+		try(Connection con =DriverManager.getConnection(
+				Host, UserName, PassWord)){		
+		stmt = con.createStatement();
+		String insertStudentMod="INSERT INTO `Module_Student_Link` (`modID`,`regID`) VALUES ('"+mod+"','"+regId+"');";			
+
+		stmt.executeUpdate(insertStudentMod);
+
+	
 		}
 		catch (SQLException ex) {    
 			ex.printStackTrace();
@@ -281,17 +355,19 @@ public class Database {
 			String insertStudentDee="INSERT INTO `Student_Degree_Link` (`degID`,`regID`) VALUES ('"+deeIdRs1+"','"+regIdRs1+"');";			
 			
 			stmt.executeUpdate(insertStudentDee);
+			
+			
+			String allMod = "SELECT `modID` FROM `Module_Degree_Link` WHERE `degID` = '"+deeIdRs1+"';";
+			ResultSet allModRs = stmt.executeQuery(allMod);
+
 //			//insert into student_grade table
 //			String allMod = "SELECT `modID` FROM `Module_Degree_Link` WHERE `degID` = '"+deeIdRs1+"';";
 //			ResultSet allModRs = stmt.executeQuery(allMod);
-//			
-//			while (allModRs.next()) {
-//				int modIdRs1 = allModRs.getInt(1);
-//				String insertStudentGrade= "INSERT INTO `Student_Grades` (`modID`,`regID`) VALUES ('"+modIdRs1+"','"+regIdRs1+"');";			
-//				stmt.executeUpdate(insertStudentGrade);
-//			}
+
+			while (allModRs.next()) {
+				insertStudentMod(allModRs.getInt(1),regIdRs1);
+			}
 				
-			String insertStuDee = "";
 			
 		}
 		catch (SQLException ex) {    
@@ -341,23 +417,17 @@ public class Database {
 				Host, UserName, PassWord)){	
 			stmt = con.createStatement();
 
-			int deeId = 0;
 			int modId = 0;
-			String dee = "SELECT `degID` FROM `Student_Degree_Link` WHERE `regID` = '"+regId+"';";
-			ResultSet deeRs = stmt.executeQuery(dee);
-			while(deeRs.next()) {
-				deeId = deeRs.getInt(1);
-
-			}
-			String mod = "SELECT `modID` FROM `Module_Degree_Link` WHERE `degID` = '"+deeId+"';";
+			String mod = "SELECT `modID` FROM `Module_Student_Link` WHERE `regID` = '"+regId+"';";
 			ResultSet modRs = stmt.executeQuery(mod);
 			while(modRs.next()) {
 				modId = modRs.getInt(1);
 				int modCre = getModCre(modId);
-
 				cr = modCre+cr;
 
+
 			}
+
 			return cr;
 
 		}
@@ -415,6 +485,56 @@ public class Database {
 		catch (SQLException ex) {    
 			ex.printStackTrace();
 
+		}
+	}
+	public void addOptional(int degId, String mod) {
+		try(Connection con =DriverManager.getConnection(
+				Host, UserName, PassWord)){	
+			stmt = con.createStatement();
+			String modId = "SELECT `modID` FROM `Module` WHERE `fullname` = '"+mod+"';";
+			ResultSet modIdRs = stmt.executeQuery(modId);
+			int modId1 = 0;
+			while(modIdRs.next()) {
+				modId1 = modIdRs.getInt(1);
+			}
+			
+			insertStudentMod(modId1,degId);
+		}	
+		catch (SQLException ex) {    
+			ex.printStackTrace();
+
+		}		
+	}
+	public void dropOptional(int degId, String mod) {
+		try(Connection con =DriverManager.getConnection(
+				Host, UserName, PassWord)){	
+			stmt = con.createStatement();
+			String modId = "SELECT `modID` FROM `Module` WHERE `fullname` = '"+mod+"';";
+			ResultSet modIdRs = stmt.executeQuery(modId);
+			int modId1 = 0;
+			while(modIdRs.next()) {
+				modId1 = modIdRs.getInt(1);
+			}
+			
+			deleteStudentMod(modId1,degId);
+		}	
+		catch (SQLException ex) {    
+			ex.printStackTrace();
+
+		}		
+	}
+	public void deleteStudentMod (int mod,int regId) throws SQLException {
+		try(Connection con =DriverManager.getConnection(
+				Host, UserName, PassWord)){		
+		stmt = con.createStatement();
+		String deleteStudentMod="DELETE FROM `Module_Student_Link` WHERE `modID`='"+mod+"'AND `regID`='"+regId+"';";			
+
+		stmt.executeUpdate(deleteStudentMod);
+
+	
+		}
+		catch (SQLException ex) {    
+			ex.printStackTrace();
 		}
 	}
 	//display the table in interface
@@ -539,9 +659,13 @@ public class Database {
 			String stuGrade = "CREATE TABLE IF NOT EXISTS `Student_Grades` (" +
 			  " `modID` int NOT NULL," +
 			  " `regID` int NOT NULL," +
+			  " `perID` int NOT NULL," +
+
 			  " `initialGrade` float," +
 			  " `resitGrade` float," +
 			  " `repeatGrade` float," +
+			  
+			  " FOREIGN KEY (`modID`) REFERENCES Module(`modID`)," +
 			  " FOREIGN KEY (`modID`) REFERENCES Module(`modID`)," +
 			  " FOREIGN KEY (`regID`) REFERENCES Student(`regID`));";
 			
@@ -584,11 +708,13 @@ public class Database {
 			  " FOREIGN KEY (`timeID`) REFERENCES Teaching_Time(`timeID`)" +
 			  ");";
 			String period = "CREATE TABLE IF NOT EXISTS `Period_of_Study` (" +
+			  " `perID` int NOT NULL PRIMARY KEY AUTO_INCREMENT," +
 			  " `label` char," +
 			  " `startDate` date," +
 			  " `endDate` date," +
 	          " `studyID` int," +
 		      " `regID` int," +
+		      " `status` varchar(15)," +
 			  " FOREIGN KEY (`studyID`) REFERENCES Level_of_Study(`studyID`)," +
 		      " FOREIGN KEY (`regID`) REFERENCES Student(`regID`));";
 	
@@ -621,7 +747,13 @@ public class Database {
 		     " `privilegeID` int  NOT NULL PRIMARY KEY AUTO_INCREMENT," + 
 		     " `fullname` varchar(30)" +
 		     ");";
-
+			
+			String stuMod = "CREATE TABLE IF NOT EXISTS `Module_Student_Link` ("+
+			 " `modID` int NOT NULL," +
+			 " `regID` int NOT NULL," +
+			 " `core` bool," +
+			 " FOREIGN KEY (`modID`) REFERENCES Module(`modID`)," +
+			 " FOREIGN KEY (`regID`) REFERENCES Student(`regID`));";
 			//no foreign keys
 			stmt.executeUpdate(dep);
 			stmt.executeUpdate(teachTime);
@@ -639,7 +771,8 @@ public class Database {
 
 			stmt.executeUpdate(period);
 			stmt.executeUpdate(stuGrade);
-			
+			stmt.executeUpdate(stuMod);
+
 			stmt.executeUpdate(stuDee);
 			stmt.executeUpdate(deeDep);
 			stmt.executeUpdate(modDee);
@@ -710,4 +843,5 @@ public class Database {
 		Database db = new Database();
 		db.create();
 	}
+
 }

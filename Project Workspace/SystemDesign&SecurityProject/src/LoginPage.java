@@ -104,8 +104,8 @@ public class  LoginPage{
 							}
 							else if(rs.getString("pivilegeID").equals("3")){
 							Privileges = "Teacher";
-							//Teachers teacher = new Teachers(getUserName(),getPriviliges());
-							//teacher.teacherPage();
+							Teachers teacher = new Teachers();
+							teacher.teacherPage(getUserName(),getPriviliges());
 							frame.dispose();
 							}
 							else if(rs.getString("pivilegeID").equals("4")){
