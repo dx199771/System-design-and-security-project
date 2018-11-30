@@ -77,8 +77,7 @@ public class  LoginPage{
 
 					ResultSet rs = null;
 					username = userNameTF.getText();
-					//String password = SecurityHandler.hashPassword(String.valueOf(passwordTF.getPassword())); 
-					String password = String.valueOf(passwordTF.getPassword());
+					String password = SecurityHandler.hashPassword(String.valueOf(passwordTF.getPassword())); 
 					//User authentication
 					try(Connection con =DriverManager.getConnection(
 							Host, UserName, PassWord)){
