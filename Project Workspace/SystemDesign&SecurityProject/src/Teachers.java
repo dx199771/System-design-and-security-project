@@ -148,7 +148,7 @@ public class Teachers extends UserInterface{
 					JScrollPane jsp= new JScrollPane(meanGrade);
 					jsp.setSize(new Dimension(600, 500));
 					JLabel mean = new JLabel("Weighted mean grade for this period: "+test+". This student got a: ");
-					mean.setBounds(30, 520, 230, 20);
+					mean.setBounds(30, 520, 500, 20);
 					
 					
 					
