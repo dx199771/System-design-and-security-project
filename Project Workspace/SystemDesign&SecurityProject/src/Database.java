@@ -224,11 +224,17 @@ public class Database {
 			while(levelIdRs.next()) {
 				levelId1 = levelIdRs.getInt(1);
 			}
-			String insertDee="INSERT INTO `Degree` (`fullname`,`code`,`entry`,`studyID`) VALUES ('"+deeName+"','"+abbCode+"','"+entry1+"','"+ levelId1+"');";
-			System.out.print(insertDee);
-			stmt.executeUpdate(insertDee);
-		
-		
+			
+			String checkExistance = "SELECT COUNT(`degID`) as 'total' FROM `Degree` WHERE `fullname` = '"+deeName+"' or 'code' = '" + abbCode + "';";
+			ResultSet rs = stmt.executeQuery(checkExistance);
+			rs.next();
+			
+			if(rs.getInt("total") <= 0) {
+				String insertDee="INSERT INTO `Degree` (`fullname`,`code`,`entry`,`studyID`) VALUES ('"+deeName+"','"+abbCode+"','"+entry1+"','"+ levelId1+"');";
+				stmt.executeUpdate(insertDee);
+			}else {
+				JOptionPane.showMessageDialog(null, "A degree with that name/code already exists.", "Degree already exists",JOptionPane.WARNING_MESSAGE);
+			}
 		}
 		catch (SQLException ex) {    
 			ex.printStackTrace();
@@ -237,11 +243,19 @@ public class Database {
 	public void insertDepa (String depName,String abbCode) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){
-		stmt = con.createStatement();		
-		String insertDep="INSERT INTO `Department` (`fullname`,`code`) VALUES ('"+depName+"','"+abbCode+"');";
-
-		stmt.executeUpdate(insertDep);
-
+			stmt = con.createStatement();
+			
+			String checkExistance = "SELECT COUNT(`depID`) as 'total' FROM `Department` WHERE `fullname` = '"+depName+"' or 'code' = '" + abbCode + "';";
+			ResultSet rs = stmt.executeQuery(checkExistance);
+			rs.next();
+			
+			if(rs.getInt("total") <= 0) {
+				String insertDep="INSERT INTO `Department` (`fullname`,`code`) VALUES ('"+depName+"','"+abbCode+"');";
+				stmt.executeUpdate(insertDep);
+			}else {
+				JOptionPane.showMessageDialog(null, "A department with that name/code already exists.", "Department already exists",JOptionPane.WARNING_MESSAGE);
+			}
+	
 		}
 		catch (SQLException ex) {    
 			ex.printStackTrace();
@@ -250,12 +264,19 @@ public class Database {
 	public void insertAccount (String accName,String password,int privil) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
-		stmt = con.createStatement();
-		String insertAccounts="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`) VALUES ('"+accName+"','"+password+"','"+privil+"');";
-
-		stmt.executeUpdate(insertAccounts);
-
-	
+			stmt = con.createStatement();
+		
+			String checkExistance = "SELECT COUNT(`accountid`) as 'total' FROM `Login_Details` WHERE `username` = '"+accName+"';";
+			ResultSet rs = stmt.executeQuery(checkExistance);
+			rs.next();
+			
+			if(rs.getInt("total") <= 0) {
+				String insertAccounts="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`) VALUES ('"+accName+"','"+password+"','"+privil+"');";
+				stmt.executeUpdate(insertAccounts);
+			}else {
+				JOptionPane.showMessageDialog(null, "An account with that username already exists.", "Account already exists",JOptionPane.WARNING_MESSAGE);
+			}
+		
 		}
 		catch (SQLException ex) {    
 			ex.printStackTrace();
@@ -316,8 +337,18 @@ public class Database {
 		while(timeIdRs.next()) {
 			timeIdRs1 = timeIdRs.getString(1);
 		}
-		String insertModule="INSERT INTO `Module` (`fullname`,`code`,`creditID`,`timeID`) VALUES ('"+modName+"','"+abbCode+"','"+creIdRs1+"','"+timeIdRs1+"');";
-		stmt.executeUpdate(insertModule);
+		
+		String checkExistance = "SELECT COUNT(`modID`) as 'total' FROM `Degree` WHERE `fullname` = '"+modName+"' or 'code' = '" + abbCode + "';";
+		ResultSet rs = stmt.executeQuery(checkExistance);
+		rs.next();
+		
+		if(rs.getInt("total") <= 0) {
+			String insertModule="INSERT INTO `Module` (`fullname`,`code`,`creditID`,`timeID`) VALUES ('"+modName+"','"+abbCode+"','"+creIdRs1+"','"+timeIdRs1+"');";
+			stmt.executeUpdate(insertModule);
+		}else {
+			JOptionPane.showMessageDialog(null, "A module with that name/code already exists.", "Module already exists",JOptionPane.WARNING_MESSAGE);
+		}
+		
 		}
 		catch (SQLException ex) {    
 			ex.printStackTrace();
@@ -673,7 +704,7 @@ public class Database {
 			String acc = "CREATE TABLE IF NOT EXISTS `Login_Details`  (" +
 			   " `accountid` int  NOT NULL PRIMARY KEY AUTO_INCREMENT,"+
 			   " `username` varchar(20) NOT NULL," +
-			   " `password` varchar(20) NOT NULL," +
+			   " `password` varchar(128) NOT NULL," +
 			   " `pivilegeID` varchar(15) NOT NULL," +
 			   " `regid` int," +
 			  // " PRIMARY KEY (username)," +

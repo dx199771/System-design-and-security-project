@@ -205,7 +205,6 @@ public class Administrators extends UserInterface{
 								else if(privil=="Student")
 									privilInt= 4;
 								db.insertAccount(accName,password,privilInt);
-								System.out.println("Success added one user");
 								addAccount.dispose();
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
