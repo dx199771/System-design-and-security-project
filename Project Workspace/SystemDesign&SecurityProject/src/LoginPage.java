@@ -25,7 +25,7 @@ public class  LoginPage{
 		label.setBounds(0,0,icon.getIconWidth(),icon.getIconHeight());
 			
 		JFrame frame=new JFrame();
-		
+		frame.setResizable(false);
 		frame.getLayeredPane().add(label,new Integer(Integer.MIN_VALUE));
 			
 		JPanel j=(JPanel)frame.getContentPane();

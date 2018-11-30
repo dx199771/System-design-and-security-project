@@ -22,7 +22,8 @@ public class Administrators extends UserInterface{
 		//admin page main frame set up
 		JFrame frame=new JFrame();
 		frame.getLayeredPane().add(label,new Integer(Integer.MIN_VALUE));	
-		
+		frame.setResizable(false);
+
 		//get container and set to invisible
 		JPanel j=(JPanel)frame.getContentPane();
 		j.setOpaque(false);
@@ -145,7 +146,8 @@ public class Administrators extends UserInterface{
 				addAccount.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				addAccount.setLayout(null);
 				addAccount.setVisible(true);
-				
+				addAccount.setResizable(false);
+
 				JPanel addAccountP=new JPanel();
 				addAccountP.setLayout(null);
 				addAccountP.setBounds(0,0,300,220);
@@ -233,7 +235,8 @@ public class Administrators extends UserInterface{
 				addDepartment.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				addDepartment.setLayout(null);
 				addDepartment.setVisible(true);
-				
+				addDepartment.setResizable(false);
+
 				JPanel addDepartmentP=new JPanel();
 				addDepartmentP.setLayout(null);
 				addDepartmentP.setBounds(0,0,300,220);
@@ -315,6 +318,7 @@ public class Administrators extends UserInterface{
 			    entry.addItem("P");
 			    entry.setBounds(140, 80, 100, 20);
 			    
+			    addDegree.setResizable(false);
 
 			    
 			    JLabel level = new JLabel("Level:");
@@ -404,7 +408,8 @@ public class Administrators extends UserInterface{
 			    abbCode.setBounds(30, 70, 100, 20);
 			    JTextField abbCode1 = new JTextField();
 			    abbCode1.setBounds(140, 70, 100, 20);
-		
+			    addModule.setResizable(false);
+
 			    
 			    try {
 			    JLabel abbCre = new JLabel("Credits:");
@@ -491,7 +496,8 @@ public class Administrators extends UserInterface{
 				JPanel linkDegreeP=new JPanel();
 				linkDegreeP.setLayout(null);
 				linkDegreeP.setBounds(0,0,300,220);
-				
+				linkDegree.setResizable(false);
+
 
 			    
 			    
@@ -579,6 +585,7 @@ public class Administrators extends UserInterface{
 				linkModP.setLayout(null);
 				linkModP.setBounds(0,0,300,220);
 				
+				linkMod.setResizable(false);
 
 			    
 			    

@@ -452,6 +452,7 @@ public class Database {
 
 		}
 	}
+
 	private int getModCre(int modId) {
 		int cre=0;
 		int credit = 0;
@@ -591,15 +592,34 @@ public class Database {
 		}
 
 	}
-	public JTable meanGradeTable (int regID,int perId){
+
+	public float getAverageGrade(JTable tb) {
+		float cGrade = 0;
+		Object gradeObj = 0;
+		for(int i=0;i<tb.getRowCount();i++) {
+			if(tb.getValueAt(i, 4)==null && tb.getValueAt(i, 5)==null)
+				gradeObj = tb.getValueAt(i, 3);
+				//System.out.print(tb.getValueAt(i, 3));
+			else if(tb.getValueAt(i, 5)==null)
+				gradeObj = tb.getValueAt(i, 4);
+				//System.out.print(tb.getValueAt(i, 4));
+			else
+				gradeObj = tb.getValueAt(i, 5);
+				//System.out.print(tb.getValueAt(i, 5));
+			float grade = Float.parseFloat((String)gradeObj);
+			cGrade = grade+cGrade;
+		}
+
+		return cGrade/(tb.getRowCount());
+	}
+	public JTable meanGradeTable (int regID,int perID){
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){	
 		stmt = con.createStatement();
 	
-		String sqlCom = "SELECT `initialGrade` FROM `Student_Grades` WHERE regID == "+regID+" perID == "+perId+"";";
+		String sqlCom = "SELECT * FROM `Student_Grades` WHERE `regID` = '"+regID+"' AND `perID` = '"+perID+"';";
 		
 		ResultSet accRs = stmt.executeQuery(sqlCom);
-			
 		if(!(accRs.next()))
 		{
 		   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
@@ -614,7 +634,10 @@ public class Database {
 		}
 		do{
 		     rows.addElement(getNextRow(accRs,rsmd));
+			    System.out.print(getNextRow(accRs,rsmd));
+
 		}while(accRs.next());
+		
 		
 		JTable table = new JTable(rows,columnHeads);
 		
@@ -673,7 +696,7 @@ public class Database {
 			String acc = "CREATE TABLE IF NOT EXISTS `Login_Details`  (" +
 			   " `accountid` int  NOT NULL PRIMARY KEY AUTO_INCREMENT,"+
 			   " `username` varchar(20) NOT NULL," +
-			   " `password` varchar(20) NOT NULL," +
+			   " `password` varchar(128) NOT NULL," +
 			   " `pivilegeID` varchar(15) NOT NULL," +
 			   " `regid` int," +
 			  // " PRIMARY KEY (username)," +
