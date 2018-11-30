@@ -660,12 +660,10 @@ public class Database {
 			  " `modID` int NOT NULL," +
 			  " `regID` int NOT NULL," +
 			  " `perID` int NOT NULL," +
-
 			  " `initialGrade` float," +
 			  " `resitGrade` float," +
 			  " `repeatGrade` float," +
-			  
-			  " FOREIGN KEY (`modID`) REFERENCES Module(`modID`)," +
+			  " FOREIGN KEY (`perID`) REFERENCES Period_of_Study(`perID`)," +
 			  " FOREIGN KEY (`modID`) REFERENCES Module(`modID`)," +
 			  " FOREIGN KEY (`regID`) REFERENCES Student(`regID`));";
 			
@@ -806,7 +804,7 @@ public class Database {
 			stmt.executeUpdate(insertStu);
 
 			
-			String insertStuMod="INSERT INTO `Student_Grades` (`modID`,`regID`,`initialGrade`,`resitGrade`,`repeatGrade`)VALUES ('1','1','0','20','40');";
+			String insertStuMod="INSERT INTO `Student_Grades` (`modID`,`regID`,`perID`,`initialGrade`,`resitGrade`,`repeatGrade`)VALUES ('1','1','1','0','20','40');";
 			stmt.executeUpdate(insertStuMod);
 			
 			String insertPer="INSERT INTO `Period_of_Study` (`label`,`startDate`,`endDate`,`studyID`,`regID`)VALUES ('A','2017/01/08','2018/01/04','1','1');";
@@ -834,10 +832,6 @@ public class Database {
 		}
 
 	}
-		
-	
-	
-	
 	
 	public static void main(String[] args) throws Exception {
 		Database db = new Database();
