@@ -193,7 +193,7 @@ public class Administrators extends UserInterface{
 					public void actionPerformed(ActionEvent e) {
 							try {
 								String accName = accName1.getText();
-							    String password = password1.getText();
+							    String password = SecurityHandler.hashPassword(password1.getText());
 							    String privil = (String) PrivilegesBox.getSelectedItem();
 								int privilInt = 0;
 								if(privil=="Administrator")

@@ -65,8 +65,6 @@ public class  LoginPage{
 
 		panel.setOpaque(false);
 		
-		
-
 		frame.add(panel);
 		
 		frame.setLayout(null);
@@ -79,13 +77,13 @@ public class  LoginPage{
 
 					ResultSet rs = null;
 					username = userNameTF.getText();
-					String password = passwordTF.getText(); 
+					String password = SecurityHandler.hashPassword(String.valueOf(passwordTF.getPassword())); 
 					//User authentication
 					try(Connection con =DriverManager.getConnection(
 							Host, UserName, PassWord)){
 						stmt = con.createStatement();
 
-					String rsString = "select `pivilegeID` from `Login_Details` where `username`='"+userNameTF.getText()+"' and `password`='"+passwordTF.getText()+"'";
+					String rsString = "select `pivilegeID` from `Login_Details` where `username`='"+username+"' and `password`='"+password+"'";
 					rs = stmt.executeQuery(rsString);
 
 					if(rs.next()) {
