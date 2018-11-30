@@ -131,6 +131,9 @@ public class Teachers extends UserInterface{
 			public void actionPerformed(ActionEvent e) {
 				int selected = table.getSelectedRow();
 				if(selected != -1) {
+					int regId =  Integer.parseInt((String) table.getValueAt(selected,1));
+					int perId =  Integer.parseInt((String) table.getValueAt(selected,2));
+
 					JFrame showMead=new JFrame("Mean grade");
 					showMead.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 					showMead.setLayout(null);
@@ -139,7 +142,8 @@ public class Teachers extends UserInterface{
 					showMead.setLayout(null);
 					showMead.setBounds(0,0,300,220);
 					
-					JTable meanGrade = new JTable ();
+					JTable meanGrade = db.meanGradeTable(regId,perId);
+					
 					
 					
 					
@@ -185,6 +189,17 @@ public class Teachers extends UserInterface{
 			    JTextField grade1 = new JTextField();
 			    grade1.setBounds(170, 80, 130, 20);
 			    
+			    
+			    
+			    JLabel per = new JLabel("Period of study:");
+			    per.setBounds(30, 110, 130, 20);
+				JComboBox perBox = db.getPBox("Period_of_Study");
+				perBox.setBounds(170, 110, 130, 20);
+			    
+			    
+				addGrP.add(per);
+				addGrP.add(perBox);
+
 				addGrP.add(leadeeName);
 				addGrP.add(allMod);
 				addGrP.add(stuId);
@@ -209,8 +224,9 @@ public class Teachers extends UserInterface{
 
 							String mod = (String) allMod.getSelectedItem();
 							Integer stu =  (Integer)stuIdBox.getSelectedItem();
-							int grade =Integer.parseInt(  grade1.getText());
-							db.insertGrade(mod,stu,grade);
+							int grade =Integer.parseInt(grade1.getText());
+							int per = Integer.parseInt((String) perBox.getSelectedItem());
+							db.insertGrade(mod,stu,per,grade);
 							System.out.println("Success");
 							addGr.dispose();
 										
@@ -238,7 +254,7 @@ public class Teachers extends UserInterface{
 				
 				int selected = table.getSelectedRow();
 				if(selected != -1) {
-				int regId =  Integer.parseInt((String) table.getValueAt(selected,0));
+				int regId =  Integer.parseInt((String) table.getValueAt(selected,1));
 				int modId =  Integer.parseInt((String) table.getValueAt(selected,0));
 
 				JFrame upGr=new JFrame("Update grade");

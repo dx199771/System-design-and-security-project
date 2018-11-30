@@ -57,6 +57,21 @@ public class Database {
 				}	
 			}	
 		}
+		else if(role == "Period_of_Study") {
+			String sql ="SELECT `perID` from "+role+";";
+			ResultSet depRs = stmt.executeQuery(sql);
+			if(!(depRs.next()))
+			{
+			   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
+			}
+			else {
+				DepBox.addItem(depRs.getString("perID"));
+
+				while(depRs.next()) {
+					DepBox.addItem(depRs.getString("perID"));
+				}	
+			}	
+		}
 		else if(role == "Student") {
 			String sql ="SELECT `regID` from "+role+";";
 			ResultSet depRs = stmt.executeQuery(sql);
@@ -246,7 +261,7 @@ public class Database {
 			ex.printStackTrace();
 		}
 	}
-	public void insertGrade(String mod, Integer stu, int grade) {
+	public void insertGrade(String mod, Integer stu,int perId, int grade) {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
 			stmt = con.createStatement();
@@ -258,7 +273,7 @@ public class Database {
 			}
 			
 
-			String insertGrade="INSERT INTO `Student_Grades` (`modID`,`regID`,`initialGrade`) VALUES ('"+modId1+"','"+stu+"','"+grade+"');";
+			String insertGrade="INSERT INTO `Student_Grades` (`modID`,`regID`,`perId`,`initialGrade`) VALUES ('"+modId1+"','"+stu+"','"+perId+"','"+grade+"');";
 			stmt.executeUpdate(insertGrade);
 
 		}
@@ -544,6 +559,44 @@ public class Database {
 		stmt = con.createStatement();
 	
 		String sqlCom = "SELECT * FROM "+role+";";
+		
+		ResultSet accRs = stmt.executeQuery(sqlCom);
+			
+		if(!(accRs.next()))
+		{
+		   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
+		}
+		ResultSetMetaData rsmd= (ResultSetMetaData) accRs.getMetaData();
+		Vector<Vector<String>> rows = new Vector<Vector<String>>();
+		Vector<String> columnHeads=new Vector<String>();	
+		
+		for(int i=1;i<=rsmd.getColumnCount();i++)
+		{
+		    columnHeads.addElement(rsmd.getColumnName(i));
+		}
+		do{
+		     rows.addElement(getNextRow(accRs,rsmd));
+		}while(accRs.next());
+		
+		JTable table = new JTable(rows,columnHeads);
+		
+
+		return table;
+
+		}
+		catch (SQLException ex) {    
+			ex.printStackTrace();
+			JTable table = null;
+			return table;
+		}
+
+	}
+	public JTable meanGradeTable (int regID,int perId){
+		try(Connection con =DriverManager.getConnection(
+				Host, UserName, PassWord)){	
+		stmt = con.createStatement();
+	
+		String sqlCom = "SELECT `initialGrade` FROM `Student_Grades` WHERE regID == "+regID+" perID == "+perId+"";";
 		
 		ResultSet accRs = stmt.executeQuery(sqlCom);
 			
