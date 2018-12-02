@@ -30,7 +30,8 @@ public class Registrars extends UserInterface{
 		j.setOpaque(false);
 
 		JPanel main =new JPanel();
-		
+		frame.setResizable(false);
+
 		super.profile(main,frame,username,priv);
 		JButton logOut = new JButton("Log Out");
 		logOut.setBounds(1780,60,100,30);
@@ -148,7 +149,8 @@ public class Registrars extends UserInterface{
 				
 				JPanel OptionalModuleP=new JPanel();
 				
-				
+				OptionalModule.setResizable(false);
+
 				
 
 				
@@ -240,7 +242,8 @@ public class Registrars extends UserInterface{
 				
 			    JLabel title = new JLabel("Tiele:");
 			    title.setBounds(30, 20, 130, 20);
-			    
+			    addStudent.setResizable(false);
+
 			    JComboBox titleBox=new JComboBox();
 			    titleBox.addItem("Mr.");
 				titleBox.addItem("Mrs.");
@@ -374,7 +377,8 @@ public class Registrars extends UserInterface{
 					JPanel regStudentP=new JPanel();
 					regStudentP.setLayout(null);
 					regStudentP.setBounds(0,0,500,220);
-					
+					regStudent.setResizable(false);
+
 					JLabel sDate = new JLabel("Start date(YYYY/MM/DD):");
 	
 			        String[] listData = new String[]{"2018", "2019", "2020", "2021","2022","2023","2024","2025"};

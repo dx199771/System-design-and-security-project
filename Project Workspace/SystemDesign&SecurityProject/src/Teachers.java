@@ -24,7 +24,8 @@ public class Teachers extends UserInterface{
 		//admin page main frame set up
 		JFrame frame=new JFrame();
 		frame.getLayeredPane().add(label,new Integer(Integer.MIN_VALUE));	
-		
+		frame.setResizable(false);
+
 		//get container and set to invisible
 		JPanel j=(JPanel)frame.getContentPane();
 		j.setOpaque(false);
@@ -139,19 +140,29 @@ public class Teachers extends UserInterface{
 					showMead.setLayout(null);
 					showMead.setVisible(true);
 					JPanel showMeadP=new JPanel();
-					showMead.setLayout(null);
-					showMead.setBounds(0,0,300,220);
+					showMeadP.setLayout(null);
+					showMeadP.setBounds(0,0,600,700);
 					
 					JTable meanGrade = db.meanGradeTable(regId,perId);
+					float test =db.getAverageGrade(meanGrade);
+					JScrollPane jsp= new JScrollPane(meanGrade);
+					jsp.setSize(new Dimension(600, 500));
+					JLabel mean = new JLabel("Weighted mean grade for this period: "+test+". This student got a: ");
+					mean.setBounds(30, 520, 500, 20);
 					
 					
 					
 					
-					
+					showMeadP.add(jsp);
+					showMeadP.add(mean);
+
+					showMead.setResizable(false);
+
 					showMead.setLocation(900,500);
-					showMead.setSize(350,220);
+					showMead.setSize(600,700);
 					showMead.setVisible(true);
 					showMead.add(showMeadP);
+
 				}
 				else
 					JOptionPane.showMessageDialog(null, "You must select a grade!", "No data",JOptionPane.INFORMATION_MESSAGE);
@@ -170,7 +181,8 @@ public class Teachers extends UserInterface{
 				JPanel addGrP=new JPanel();
 				addGrP.setLayout(null);
 				addGrP.setBounds(0,0,300,220);
-				
+				addGr.setResizable(false);
+
 				
 			    JLabel leadeeName = new JLabel("Module name:");
 			    leadeeName.setBounds(30, 20, 130, 20);
@@ -265,7 +277,8 @@ public class Teachers extends UserInterface{
 				upGrP.setLayout(null);
 				upGrP.setBounds(0,0,300,150);
 				
-				
+				upGr.setResizable(false);
+
 			    JLabel gradeT = new JLabel("Grade Type:");
 			    gradeT.setBounds(30, 20, 130, 20);
 				JComboBox gradeType = new JComboBox();

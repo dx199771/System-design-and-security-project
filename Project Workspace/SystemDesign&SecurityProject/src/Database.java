@@ -1,6 +1,7 @@
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -12,7 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 public class Database {
-	Statement stmt = null;
+	PreparedStatement  stmt = null;
 	Connection con = null; 
 	String Host = "jdbc:mysql://stusql.dcs.shef.ac.uk/team031";
 	String UserName = "team031";
@@ -25,11 +26,12 @@ public class Database {
 
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){
-			stmt = con.createStatement();
 
 		if(role == "Credits") {
 			String sql ="SELECT `value` from "+role+";";
-			ResultSet depRs = stmt.executeQuery(sql);
+			stmt = con.prepareStatement(sql);
+
+			ResultSet depRs = stmt.executeQuery();
 			if(!(depRs.next()))
 			{
 			   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
@@ -44,7 +46,9 @@ public class Database {
 		}
 		else if(role == "Login_Details") {
 			String sql ="SELECT `username` from "+role+";";
-			ResultSet depRs = stmt.executeQuery(sql);
+			stmt = con.prepareStatement(sql);
+
+			ResultSet depRs = stmt.executeQuery();
 			if(!(depRs.next()))
 			{
 			   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
@@ -59,7 +63,9 @@ public class Database {
 		}
 		else if(role == "Period_of_Study") {
 			String sql ="SELECT `perID` from "+role+";";
-			ResultSet depRs = stmt.executeQuery(sql);
+			stmt = con.prepareStatement(sql);
+
+			ResultSet depRs = stmt.executeQuery();
 			if(!(depRs.next()))
 			{
 			   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
@@ -74,7 +80,9 @@ public class Database {
 		}
 		else if(role == "Student") {
 			String sql ="SELECT `regID` from "+role+";";
-			ResultSet depRs = stmt.executeQuery(sql);
+			stmt = con.prepareStatement(sql);
+
+			ResultSet depRs = stmt.executeQuery();
 			if(!(depRs.next()))
 			{
 			   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
@@ -89,7 +97,9 @@ public class Database {
 		}
 		else if(role == "Teaching_Time") {
 			String sql ="SELECT `time` from "+role+";";
-			ResultSet depRs = stmt.executeQuery(sql);
+			stmt = con.prepareStatement(sql);
+
+			ResultSet depRs = stmt.executeQuery();
 			if(!(depRs.next()))
 			{
 			   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
@@ -105,7 +115,9 @@ public class Database {
 		else {
 
 		String sql ="SELECT `fullname` from "+role+";";
-		ResultSet depRs = stmt.executeQuery(sql);
+		stmt = con.prepareStatement(sql);
+
+		ResultSet depRs = stmt.executeQuery();
 		if(!(depRs.next()))
 		{
 		   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
@@ -129,7 +141,6 @@ public class Database {
 	public void removeItem (String compName,int getname) {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){
-		stmt = con.createStatement();
 		String removeName = null;
 
 		if(compName == "Login_Details") {
@@ -153,7 +164,9 @@ public class Database {
 		System.out.print(removeName);
 
 		}
-		stmt.executeUpdate(removeName);
+		stmt = con.prepareStatement(removeName);
+
+		stmt.executeUpdate();
 		}
 		catch (SQLException ex) {    
 			ex.printStackTrace();
@@ -162,7 +175,6 @@ public class Database {
 	public void linkDee(int id ,String level,boolean lead1) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){
-			stmt = con.createStatement();	
 		
 			int depId1 = 0;
 			int lead;
@@ -172,7 +184,9 @@ public class Database {
 				lead = 1;
 			
 			String depName1 = "SELECT `depID` FROM `Department` WHERE `fullname` = '"+level+"';";
-			ResultSet depNameRs1 = stmt.executeQuery(depName1);
+			stmt = con.prepareStatement(depName1);
+
+			ResultSet depNameRs1 = stmt.executeQuery();
 			while(depNameRs1.next()) {
 				depId1= depNameRs1.getInt(1);
 			}
@@ -189,14 +203,15 @@ public class Database {
 	public void linkMod(int modId, String name,boolean core) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){
-			stmt = con.createStatement();	
 			int core1 = 0;
 			if(core == true)
 				core1 = 0;
 			else
 				core1 = 1;
 			String deeName = "SELECT `degid` FROM `Degree` WHERE `fullname` = '"+name+"';";
-			ResultSet deeNameRs = stmt.executeQuery(deeName);
+			stmt = con.prepareStatement(deeName);
+
+			ResultSet deeNameRs = stmt.executeQuery();
 			int deeId = 0;
 			while(deeNameRs.next()) {
 				deeId= deeNameRs.getInt(1);
@@ -207,7 +222,8 @@ public class Database {
 			if(name.substring(0,3).equals("MSc") && core== false )
 				JOptionPane.showMessageDialog(null, "Msc degree should be all core.", "No data",JOptionPane.INFORMATION_MESSAGE);
 			else
-			stmt.executeUpdate(insertDee);
+			stmt = con.prepareStatement(insertDee);
+			stmt.executeUpdate();
 		
 		}
 		catch (SQLException ex) {    
@@ -217,24 +233,30 @@ public class Database {
 	public void insertDee (String deeName,String abbCode,char entry1,String level) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){
-			stmt = con.createStatement();	
 			String levelId = "SELECT `studyID` FROM `Level_of_Study` WHERE `fullname` = '"+level+"';";
-			ResultSet levelIdRs = stmt.executeQuery(levelId);
+			stmt = con.prepareStatement(levelId);
+
+			ResultSet levelIdRs = stmt.executeQuery();
 			int levelId1 = 0;
 			while(levelIdRs.next()) {
 				levelId1 = levelIdRs.getInt(1);
 			}
+
 			
 			String checkExistance = "SELECT COUNT(`degID`) as 'total' FROM `Degree` WHERE `fullname` = '"+deeName+"' or 'code' = '" + abbCode + "';";
-			ResultSet rs = stmt.executeQuery(checkExistance);
+			stmt = con.prepareStatement(checkExistance);
+
+      ResultSet rs = stmt.executeQuery();
 			rs.next();
 			
 			if(rs.getInt("total") <= 0) {
 				String insertDee="INSERT INTO `Degree` (`fullname`,`code`,`entry`,`studyID`) VALUES ('"+deeName+"','"+abbCode+"','"+entry1+"','"+ levelId1+"');";
-				stmt.executeUpdate(insertDee);
-			}else {
+			  stmt = con.prepareStatement(insertDee);
+			  stmt.executeUpdate();
+				}else {
 				JOptionPane.showMessageDialog(null, "A degree with that name/code already exists.", "Degree already exists",JOptionPane.WARNING_MESSAGE);
 			}
+
 		}
 		catch (SQLException ex) {    
 			ex.printStackTrace();
@@ -243,19 +265,22 @@ public class Database {
 	public void insertDepa (String depName,String abbCode) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){
-			stmt = con.createStatement();
+
 			
 			String checkExistance = "SELECT COUNT(`depID`) as 'total' FROM `Department` WHERE `fullname` = '"+depName+"' or 'code' = '" + abbCode + "';";
-			ResultSet rs = stmt.executeQuery(checkExistance);
+      stmt = con.prepareStatement(checkExistance);
+			ResultSet rs = stmt.executeQuery();
 			rs.next();
 			
 			if(rs.getInt("total") <= 0) {
 				String insertDep="INSERT INTO `Department` (`fullname`,`code`) VALUES ('"+depName+"','"+abbCode+"');";
-				stmt.executeUpdate(insertDep);
+		    stmt = con.prepareStatement(insertDep);
+        stmt.executeUpdate();
 			}else {
 				JOptionPane.showMessageDialog(null, "A department with that name/code already exists.", "Department already exists",JOptionPane.WARNING_MESSAGE);
 			}
 	
+
 		}
 		catch (SQLException ex) {    
 			ex.printStackTrace();
@@ -264,19 +289,21 @@ public class Database {
 	public void insertAccount (String accName,String password,int privil) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
-			stmt = con.createStatement();
+
 		
 			String checkExistance = "SELECT COUNT(`accountid`) as 'total' FROM `Login_Details` WHERE `username` = '"+accName+"';";
-			ResultSet rs = stmt.executeQuery(checkExistance);
+      stmt = con.prepareStatement(checkExistance);
+			ResultSet rs = stmt.executeQuery();
 			rs.next();
 			
 			if(rs.getInt("total") <= 0) {
 				String insertAccounts="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`) VALUES ('"+accName+"','"+password+"','"+privil+"');";
-				stmt.executeUpdate(insertAccounts);
+    		stmt = con.prepareStatement(insertAccounts);   
+				stmt.executeUpdate();
 			}else {
 				JOptionPane.showMessageDialog(null, "An account with that username already exists.", "Account already exists",JOptionPane.WARNING_MESSAGE);
 			}
-		
+
 		}
 		catch (SQLException ex) {    
 			ex.printStackTrace();
@@ -285,9 +312,9 @@ public class Database {
 	public void insertGrade(String mod, Integer stu,int perId, int grade) {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
-			stmt = con.createStatement();
 			String modId = "SELECT `modID` FROM `Module` WHERE `fullname` = '"+mod+"';";
-			ResultSet modIdRs = stmt.executeQuery(modId);
+			stmt = con.prepareStatement(modId);
+			ResultSet modIdRs = stmt.executeQuery();
 			int modId1 = 0;
 			while(modIdRs.next()) {
 				modId1 = modIdRs.getInt(1);
@@ -295,7 +322,8 @@ public class Database {
 			
 
 			String insertGrade="INSERT INTO `Student_Grades` (`modID`,`regID`,`perId`,`initialGrade`) VALUES ('"+modId1+"','"+stu+"','"+perId+"','"+grade+"');";
-			stmt.executeUpdate(insertGrade);
+			stmt = con.prepareStatement(insertGrade);
+			stmt.executeUpdate();
 
 		}
 		catch (SQLException ex) {    
@@ -305,15 +333,14 @@ public class Database {
 	public void updateGrade(String type, int grade, int regId, int modId) {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
-			stmt = con.createStatement();
 			
 			String update = null;
 			if(type.equals("Resit Grade"))
 				update = "UPDATE `Student_Grades` SET `resitGrade` = '"+grade+"' WHERE `modID` = '"+modId+"' AND `regID` = '"+regId+"';";
 			else
 				update = "UPDATE `Student_Grades` SET `resitGrade` = '"+grade+"' WHERE `modID` = '"+modId+"' AND `regID` = '"+regId+"';";
-
-			stmt.executeUpdate(update);
+			stmt = con.prepareStatement(update);
+			stmt.executeUpdate();
 			
 		}
 		catch (SQLException ex) {    
@@ -323,32 +350,37 @@ public class Database {
 	public void insertModule (String modName,String abbCode,int cre, String time) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
-		stmt = con.createStatement();
 		
 		String creId = "SELECT `creditID` FROM `Credits` WHERE `value` = '"+cre+"';";
-		ResultSet creIdRs = stmt.executeQuery(creId);
+		stmt = con.prepareStatement(creId);
+
+		ResultSet creIdRs = stmt.executeQuery();
 		int creIdRs1 = 0;
 		while(creIdRs.next()) {
 			creIdRs1 = creIdRs.getInt(1);
 		}
 		String timeId = "SELECT `timeID` FROM `Teaching_Time` WHERE `time` = '"+time+"';";
-		ResultSet timeIdRs = stmt.executeQuery(timeId);
+		stmt = con.prepareStatement(timeId);
+		ResultSet timeIdRs = stmt.executeQuery();
 		String timeIdRs1 = null;
 		while(timeIdRs.next()) {
 			timeIdRs1 = timeIdRs.getString(1);
 		}
 		
 		String checkExistance = "SELECT COUNT(`modID`) as 'total' FROM `Degree` WHERE `fullname` = '"+modName+"' or 'code' = '" + abbCode + "';";
-		ResultSet rs = stmt.executeQuery(checkExistance);
+    stmt = con.prepareStatement(checkExistance);
+		ResultSet rs = stmt.executeQuery();
 		rs.next();
 		
 		if(rs.getInt("total") <= 0) {
 			String insertModule="INSERT INTO `Module` (`fullname`,`code`,`creditID`,`timeID`) VALUES ('"+modName+"','"+abbCode+"','"+creIdRs1+"','"+timeIdRs1+"');";
-			stmt.executeUpdate(insertModule);
+		  stmt = con.prepareStatement(insertModule);
+			stmt.executeUpdate();
 		}else {
 			JOptionPane.showMessageDialog(null, "A module with that name/code already exists.", "Module already exists",JOptionPane.WARNING_MESSAGE);
 		}
 		
+
 		}
 		catch (SQLException ex) {    
 			ex.printStackTrace();
@@ -357,10 +389,10 @@ public class Database {
 	public void insertStudentMod (int mod,int regId) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
-		stmt = con.createStatement();
 		String insertStudentMod="INSERT INTO `Module_Student_Link` (`modID`,`regID`) VALUES ('"+mod+"','"+regId+"');";			
+		stmt = con.prepareStatement(insertStudentMod);
 
-		stmt.executeUpdate(insertStudentMod);
+		stmt.executeUpdate();
 
 	
 		}
@@ -372,39 +404,47 @@ public class Database {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
 			int tutoId = 0;
-			stmt = con.createStatement();
 
 			
 			String tuName = "SELECT `tutorID` FROM `Tutor` WHERE `fullname` = '"+tuto+"';";
-			ResultSet tuNameRs = stmt.executeQuery(tuName);
+			stmt = con.prepareStatement(tuName);
+
+			ResultSet tuNameRs = stmt.executeQuery();
 			while(tuNameRs.next()) {
 				tutoId= tuNameRs.getInt(1);
 			}
 			
-			stmt = con.createStatement();
 			String insertStudent="INSERT INTO `Student` (`title`,`forename`,`surname`,`email`,`tutorID`) VALUES ('"+tit+"','"+sName+"','"+fName+"','"+emai+"','"+tutoId+"');";
 			System.out.print(insertStudent);
-			stmt.executeUpdate(insertStudent);
+			stmt = con.prepareStatement(insertStudent);
+
+			stmt.executeUpdate();
 			//insert into student_degree table
 			String regId = "SELECT `regID` FROM `Student` WHERE `email` = '"+emai+"';";
-			ResultSet regIdRs = stmt.executeQuery(regId);
+			stmt = con.prepareStatement(regId);
+
+			ResultSet regIdRs = stmt.executeQuery();
 			int regIdRs1 = 0;
 			while(regIdRs.next()) {
 				regIdRs1 = regIdRs.getInt(1);
 			}
 			String deeId = "SELECT `degID` FROM `Degree` WHERE `fullname` = '"+dee+"';";
-			ResultSet deeIdRs = stmt.executeQuery(deeId);
+			stmt = con.prepareStatement(deeId);
+			ResultSet deeIdRs = stmt.executeQuery();
 			int deeIdRs1 = 0;
 			while(deeIdRs.next()) {
 				deeIdRs1 = deeIdRs.getInt(1);
 			}
 			String insertStudentDee="INSERT INTO `Student_Degree_Link` (`degID`,`regID`) VALUES ('"+deeIdRs1+"','"+regIdRs1+"');";			
-			
-			stmt.executeUpdate(insertStudentDee);
+			stmt = con.prepareStatement(insertStudentDee);
+
+			stmt.executeUpdate();
 			
 			
 			String allMod = "SELECT `modID` FROM `Module_Degree_Link` WHERE `degID` = '"+deeIdRs1+"';";
-			ResultSet allModRs = stmt.executeQuery(allMod);
+			stmt = con.prepareStatement(allMod);
+
+			ResultSet allModRs = stmt.executeQuery();
 
 //			//insert into student_grade table
 //			String allMod = "SELECT `modID` FROM `Module_Degree_Link` WHERE `degID` = '"+deeIdRs1+"';";
@@ -425,17 +465,18 @@ public class Database {
 		int reCre=0;
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){	
-			stmt = con.createStatement();
 			int deeId = 0;
 			String ent = null;
 			String dee = "SELECT `degID` FROM `Student_Degree_Link` WHERE `regID` = '"+regId+"';";
-			ResultSet deeRs = stmt.executeQuery(dee);
+			stmt = con.prepareStatement(dee);
+			ResultSet deeRs = stmt.executeQuery();
 			while(deeRs.next()) {
 				deeId = deeRs.getInt(1);
 
 			}
 			String entry = "SELECT `entry` FROM `Degree` WHERE `degID` = '"+deeId+"';";
-			ResultSet entRs = stmt.executeQuery(entry);
+			stmt = con.prepareStatement(entry);
+			ResultSet entRs = stmt.executeQuery();
 			while(entRs.next()) {
 				ent = entRs.getString("entry");
 
@@ -461,11 +502,12 @@ public class Database {
 
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){	
-			stmt = con.createStatement();
 
 			int modId = 0;
 			String mod = "SELECT `modID` FROM `Module_Student_Link` WHERE `regID` = '"+regId+"';";
-			ResultSet modRs = stmt.executeQuery(mod);
+			stmt = con.prepareStatement(mod);
+
+			ResultSet modRs = stmt.executeQuery();
 			while(modRs.next()) {
 				modId = modRs.getInt(1);
 				int modCre = getModCre(modId);
@@ -483,21 +525,25 @@ public class Database {
 
 		}
 	}
+
 	private int getModCre(int modId) {
 		int cre=0;
 		int credit = 0;
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){	
-			stmt = con.createStatement();
 			String dee = "SELECT `creditID` FROM `Module` WHERE `modId` = '"+modId+"';";
-			ResultSet deeRs = stmt.executeQuery(dee);
+			stmt = con.prepareStatement(dee);
+
+			ResultSet deeRs = stmt.executeQuery();
 			while(deeRs.next()) {
 				cre = deeRs.getInt(1);
 				System.out.print(cre);
 
 			}
 			String creit = "SELECT `value` FROM `Credits` WHERE `creditID` = '"+cre+"';";
-			ResultSet creditRs = stmt.executeQuery(creit);
+			stmt = con.prepareStatement(creit);
+
+			ResultSet creditRs = stmt.executeQuery();
 			while(creditRs.next()) {
 				credit = creditRs.getInt(1);
 
@@ -513,12 +559,13 @@ public class Database {
 	public void registerStudent(String startDate, String endDate, char label, String level, int degId) {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){	
-			stmt = con.createStatement();
 			
 			String levelId = "SELECT `studyID` FROM `Level_of_Study` WHERE `fullname` = '"+level+"';";
+			stmt = con.prepareStatement(levelId);
+
 			System.out.print(levelId);
 
-			ResultSet levelIdRs = stmt.executeQuery(levelId);
+			ResultSet levelIdRs = stmt.executeQuery();
 			int levelId1 = 0;
 
 			while(levelIdRs.next()) {
@@ -526,7 +573,9 @@ public class Database {
 			}
 
 			String registerStu="INSERT INTO `Period_of_Study` (`label`,`startDate`,`endDate`,`studyID`,`regID`) VALUES ('"+label+"','"+startDate+"','"+endDate+"','"+levelId1+"','"+degId+"');";			
-			stmt.executeUpdate(registerStu);
+			stmt = con.prepareStatement(registerStu);
+
+			stmt.executeUpdate();
 		}	
 		catch (SQLException ex) {    
 			ex.printStackTrace();
@@ -536,9 +585,10 @@ public class Database {
 	public void addOptional(int degId, String mod) {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){	
-			stmt = con.createStatement();
 			String modId = "SELECT `modID` FROM `Module` WHERE `fullname` = '"+mod+"';";
-			ResultSet modIdRs = stmt.executeQuery(modId);
+			stmt = con.prepareStatement(modId);
+
+			ResultSet modIdRs = stmt.executeQuery();
 			int modId1 = 0;
 			while(modIdRs.next()) {
 				modId1 = modIdRs.getInt(1);
@@ -554,9 +604,9 @@ public class Database {
 	public void dropOptional(int degId, String mod) {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){	
-			stmt = con.createStatement();
 			String modId = "SELECT `modID` FROM `Module` WHERE `fullname` = '"+mod+"';";
-			ResultSet modIdRs = stmt.executeQuery(modId);
+			stmt = con.prepareStatement(modId);
+			ResultSet modIdRs = stmt.executeQuery();
 			int modId1 = 0;
 			while(modIdRs.next()) {
 				modId1 = modIdRs.getInt(1);
@@ -572,10 +622,10 @@ public class Database {
 	public void deleteStudentMod (int mod,int regId) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
-		stmt = con.createStatement();
 		String deleteStudentMod="DELETE FROM `Module_Student_Link` WHERE `modID`='"+mod+"'AND `regID`='"+regId+"';";			
+		stmt = con.prepareStatement(deleteStudentMod);
 
-		stmt.executeUpdate(deleteStudentMod);
+		stmt.executeUpdate();
 
 	
 		}
@@ -587,11 +637,11 @@ public class Database {
 	public JTable displayTable (String role){
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){	
-		stmt = con.createStatement();
 	
 		String sqlCom = "SELECT * FROM "+role+";";
-		
-		ResultSet accRs = stmt.executeQuery(sqlCom);
+		stmt = con.prepareStatement(sqlCom);
+
+		ResultSet accRs = stmt.executeQuery();
 			
 		if(!(accRs.next()))
 		{
@@ -622,15 +672,34 @@ public class Database {
 		}
 
 	}
-	public JTable meanGradeTable (int regID,int perId){
+
+	public float getAverageGrade(JTable tb) {
+		float cGrade = 0;
+		Object gradeObj = 0;
+		for(int i=0;i<tb.getRowCount();i++) {
+			if(tb.getValueAt(i, 4)==null && tb.getValueAt(i, 5)==null)
+				gradeObj = tb.getValueAt(i, 3);
+				//System.out.print(tb.getValueAt(i, 3));
+			else if(tb.getValueAt(i, 5)==null)
+				gradeObj = tb.getValueAt(i, 4);
+				//System.out.print(tb.getValueAt(i, 4));
+			else
+				gradeObj = tb.getValueAt(i, 5);
+				//System.out.print(tb.getValueAt(i, 5));
+			float grade = Float.parseFloat((String)gradeObj);
+			cGrade = grade+cGrade;
+		}
+
+		return cGrade/(tb.getRowCount());
+	}
+	public JTable meanGradeTable (int regID,int perID){
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){	
-		stmt = con.createStatement();
 	
-		String sqlCom = "SELECT `initialGrade` FROM `Student_Grades` WHERE regID == "+regID+" perID == "+perId+"";";
-		
-		ResultSet accRs = stmt.executeQuery(sqlCom);
-			
+		String sqlCom = "SELECT * FROM `Student_Grades` WHERE `regID` = '"+regID+"' AND `perID` = '"+perID+"';";
+		stmt = con.prepareStatement(sqlCom);
+
+		ResultSet accRs = stmt.executeQuery();
 		if(!(accRs.next()))
 		{
 		   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
@@ -645,7 +714,10 @@ public class Database {
 		}
 		do{
 		     rows.addElement(getNextRow(accRs,rsmd));
+			    System.out.print(getNextRow(accRs,rsmd));
+
 		}while(accRs.next());
+		
 		
 		JTable table = new JTable(rows,columnHeads);
 		
@@ -676,7 +748,6 @@ public class Database {
 				Host, UserName, PassWord)){		
 		   
 		    
-		    stmt = con.createStatement();
 		    
 		    String drop = "DROP TABLE IF EXISTS Tutor;";
 		    String dropDe = "DROP TABLE IF EXISTS Department;";
@@ -837,70 +908,117 @@ public class Database {
 			 " FOREIGN KEY (`modID`) REFERENCES Module(`modID`)," +
 			 " FOREIGN KEY (`regID`) REFERENCES Student(`regID`));";
 			//no foreign keys
-			stmt.executeUpdate(dep);
-			stmt.executeUpdate(teachTime);
-			stmt.executeUpdate(cred);
-			stmt.executeUpdate(level);
-			stmt.executeUpdate(tutor);
-			stmt.executeUpdate(deeClass);
-			stmt.executeUpdate(priv);
+			stmt = con.prepareStatement(dep);
+
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(teachTime);
+
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(cred);
+
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(level);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(tutor);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(deeClass);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(priv);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(stud);
 			//have foreign keys
-			stmt.executeUpdate(stud);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(mod);
 
-			stmt.executeUpdate(mod);
-			stmt.executeUpdate(dee);
-			stmt.executeUpdate(acc);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(dee);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(acc);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(period);
 
-			stmt.executeUpdate(period);
-			stmt.executeUpdate(stuGrade);
-			stmt.executeUpdate(stuMod);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(stuGrade);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(stuMod);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(stuDee);
 
-			stmt.executeUpdate(stuDee);
-			stmt.executeUpdate(deeDep);
-			stmt.executeUpdate(modDee);
-			stmt.executeUpdate(stuClass);
-			stmt.executeUpdate(stuLoginLink);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(deeDep);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(modDee);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(stuClass);
+			stmt.executeUpdate();
+			stmt = con.prepareStatement(stuLoginLink);
+			stmt.executeUpdate();
 
 			String insertTut="INSERT INTO `Tutor` (`fullname`)VALUES ('Dr.eg');";
-			stmt.executeUpdate(insertTut);
+			stmt = con.prepareStatement(insertTut);
+
+			stmt.executeUpdate();
 			String insertDep="INSERT INTO `Department` (`fullname`,`code`)VALUES ('Computer Science', 'COM');";
-			stmt.executeUpdate(insertDep);
+			stmt = con.prepareStatement(insertDep);
+
+			stmt.executeUpdate();
 			String insertTu="INSERT INTO `Level_of_Study` (`fullname`,`code`)VALUES ('Bachelors','3');";
-			stmt.executeUpdate(insertTu);
+			stmt = con.prepareStatement(insertTu);
+
+			stmt.executeUpdate();
 			String insertDee="INSERT INTO `Degree` (`fullname`,`code`,`entry`,`studyID`)VALUES ('Computer Science', 'COMU01','U','1');";
-			stmt.executeUpdate(insertDee);
+			stmt = con.prepareStatement(insertDee);
+
+			stmt.executeUpdate();
 			
 			String insertCre="INSERT INTO `Credits` (`value`)VALUES ('20');";
-			stmt.executeUpdate(insertCre);
+			stmt = con.prepareStatement(insertCre);
+
+			stmt.executeUpdate();
 			
 			String insertTeacTime="INSERT INTO `Teaching_Time` (`time`)VALUES ('Autumn');";
-			stmt.executeUpdate(insertTeacTime);
+			stmt = con.prepareStatement(insertTeacTime);
+
+			stmt.executeUpdate();
 			
 			
 			
 			String insertMod="INSERT INTO `Module` (`fullname`,`code`,`creditID`,`timeID`)VALUES ('How to Write Examples', 'EXA1001','1','1');";
-			stmt.executeUpdate(insertMod);
+			stmt = con.prepareStatement(insertMod);
+
+			stmt.executeUpdate();
 			String insertMod2="INSERT INTO `Module` (`fullname`,`code`,`creditID`,`timeID`)VALUES ('How to Write Advanced Examples', 'EXA2001','1','1');";
-			stmt.executeUpdate(insertMod2);
+			stmt = con.prepareStatement(insertMod2);
+			stmt.executeUpdate();
 
 			
 			String insertStu="INSERT INTO `Student` (`title`,`forename`,`surname`,`email`,`tutorID`)VALUES ('Mr','eg','eg','eg@sheffield.ac.uk','1');";
-			stmt.executeUpdate(insertStu);
+			stmt = con.prepareStatement(insertStu);
+			stmt.executeUpdate();
 
 			
 			String insertStuMod="INSERT INTO `Student_Grades` (`modID`,`regID`,`perID`,`initialGrade`,`resitGrade`,`repeatGrade`)VALUES ('1','1','1','0','20','40');";
-			stmt.executeUpdate(insertStuMod);
+			stmt = con.prepareStatement(insertStuMod);
+			//stmt.executeUpdate();
 			
 			String insertPer="INSERT INTO `Period_of_Study` (`label`,`startDate`,`endDate`,`studyID`,`regID`)VALUES ('A','2017/01/08','2018/01/04','1','1');";
-			stmt.executeUpdate(insertPer);
+			stmt = con.prepareStatement(insertPer);
+
+			stmt.executeUpdate();
 			
 			String insertPri="INSERT INTO `Privileges` (`fullname`)VALUES ('Administrator');";
-			stmt.executeUpdate(insertPri);
+			stmt = con.prepareStatement(insertPri);
+
+			stmt.executeUpdate();
 			
 			String insertAcc="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`)VALUES ('1','1','1');";
-			stmt.executeUpdate(insertAcc);
+			stmt = con.prepareStatement(insertAcc);
+
+			stmt.executeUpdate();
 			String insertAcc1="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`)VALUES ('3','3','2');";
-			stmt.executeUpdate(insertAcc1);
+			stmt = con.prepareStatement(insertAcc1);
+
+			stmt.executeUpdate();
 
 
 			
