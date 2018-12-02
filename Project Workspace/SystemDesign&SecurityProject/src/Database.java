@@ -692,11 +692,12 @@ public class Database {
 
 		return cGrade/(tb.getRowCount());
 	}
+	
 	public JTable meanGradeTable (int regID,int perID){
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){	
 	
-		String sqlCom = "SELECT * FROM `Student_Grades` WHERE `regID` = '"+regID+"' AND `perID` = '"+perID+"';";
+		String sqlCom = "SELECT * FROM `Student_Grades` WHERE `regID` = '"+ regID +"' AND `perID` = '"+ perID +"';";
 		stmt = con.prepareStatement(sqlCom);
 
 		ResultSet accRs = stmt.executeQuery();
@@ -999,7 +1000,7 @@ public class Database {
 			
 			String insertStuMod="INSERT INTO `Student_Grades` (`modID`,`regID`,`perID`,`initialGrade`,`resitGrade`,`repeatGrade`)VALUES ('1','1','1','0','20','40');";
 			stmt = con.prepareStatement(insertStuMod);
-			//stmt.executeUpdate();
+			stmt.executeUpdate();
 			
 			String insertPer="INSERT INTO `Period_of_Study` (`label`,`startDate`,`endDate`,`studyID`,`regID`)VALUES ('A','2017/01/08','2018/01/04','1','1');";
 			stmt = con.prepareStatement(insertPer);
@@ -1011,11 +1012,14 @@ public class Database {
 
 			stmt.executeUpdate();
 			
-			String insertAcc="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`)VALUES ('1','1','1');";
+		    String password = SecurityHandler.hashPassword("1");
+			String insertAcc="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`)VALUES ('1','" + password + "','1');";
 			stmt = con.prepareStatement(insertAcc);
 
 			stmt.executeUpdate();
-			String insertAcc1="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`)VALUES ('3','3','2');";
+			
+		    password = SecurityHandler.hashPassword("3");
+			String insertAcc1="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`)VALUES ('3','" + password + "','2');";
 			stmt = con.prepareStatement(insertAcc1);
 
 			stmt.executeUpdate();

@@ -50,6 +50,7 @@ public class Teachers extends UserInterface{
 			}
 		});
 	}
+	
 	public JPanel navigation(JPanel main,JFrame fr) {
 		JPanel nav =new JPanel();
 		//nav layout set up
@@ -63,7 +64,6 @@ public class Teachers extends UserInterface{
 		JButton accounts=new JButton("- Students Grades -");
 		navAttribute(accounts);
 
-		
 		//action listener
 		profile.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
@@ -74,9 +74,9 @@ public class Teachers extends UserInterface{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-	
 		}
 		});
+		
 		accounts.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			updateJSwing(main);
@@ -89,8 +89,6 @@ public class Teachers extends UserInterface{
 	
 		}
 		});
-
-
 
 		//add buttons to panel
 		nav.add(profile);
@@ -107,9 +105,9 @@ public class Teachers extends UserInterface{
 
 		jsp.setSize(new Dimension(1577, 588));
 		
-		JButton addGrade= new JButton("Add grades");
-		JButton updateGrade= new JButton("Update grades");
-		JButton meanGrade= new JButton("Mean grade (Select a student to show its grade)");
+		JButton addGrade= new JButton("Add Grade");
+		JButton updateGrade= new JButton("Update Grade");
+		JButton meanGrade= new JButton("Calculate Mean Grade");
 
 		addGrade.setBounds(0,738, 200, 50);
 		updateGrade.setBounds(250,738, 200, 50);
@@ -126,49 +124,95 @@ public class Teachers extends UserInterface{
 		main.add(jsp);
 		
 	}
+	
 	public void meanGrade(JButton bt,JTable table) {
 		bt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int selected = table.getSelectedRow();
-				if(selected != -1) {
-					int regId =  Integer.parseInt((String) table.getValueAt(selected,1));
-					int perId =  Integer.parseInt((String) table.getValueAt(selected,2));
+				JFrame meanGr=new JFrame("Select Student");
+				meanGr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				meanGr.setLayout(null);
+				meanGr.setVisible(true);
+				try {
+					JPanel meanGrP=new JPanel();
+					meanGrP.setLayout(null);
+					meanGrP.setBounds(0,0,300,220);
+					meanGr.setResizable(false);
+					
+				    JLabel stuId = new JLabel("Student:");
+				    stuId.setBounds(30, 50, 130, 20);
+					JComboBox stuIdBox = db.getPBox("Student");
+					stuIdBox.setBounds(170, 50, 130, 20);
 
-					JFrame showMead=new JFrame("Mean grade");
-					showMead.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					showMead.setLayout(null);
-					showMead.setVisible(true);
-					JPanel showMeadP=new JPanel();
-					showMeadP.setLayout(null);
-					showMeadP.setBounds(0,0,600,700);
-					
-					JTable meanGrade = db.meanGradeTable(regId,perId);
-					float test =db.getAverageGrade(meanGrade);
-					JScrollPane jsp= new JScrollPane(meanGrade);
-					jsp.setSize(new Dimension(600, 500));
-					JLabel mean = new JLabel("Weighted mean grade for this period: "+test+". This student got a: ");
-					mean.setBounds(30, 520, 500, 20);
-					
-					
-					
-					
-					showMeadP.add(jsp);
-					showMeadP.add(mean);
+				    JLabel per = new JLabel("Period of study:");
+				    per.setBounds(30, 110, 130, 20);
+					JComboBox perBox = db.getPBox("Period_of_Study");
+					perBox.setBounds(170, 110, 130, 20);
+				    
+					meanGrP.add(per);
+					meanGrP.add(perBox);
+	
+					meanGrP.add(stuId);
+					meanGrP.add(stuIdBox);
 
-					showMead.setResizable(false);
+					JButton okbtn = new JButton("Calculate");
+					okbtn.setBounds(30, 140, 80, 20);
+					JButton cancelbtn = new JButton("Cancel");
+					cancelbtn.setBounds(220, 140, 80, 20);
+					meanGrP.add(okbtn);
+					meanGrP.add(cancelbtn);
+					meanGr.setLocation(900,500);
+					meanGr.setSize(350,220);
+					meanGr.setVisible(true);
+					meanGr.add(meanGrP);
+					  okbtn.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+	
+								Integer stu =  (Integer)stuIdBox.getSelectedItem();
+								int per = Integer.parseInt((String) perBox.getSelectedItem());
+								
+								meanGr.dispose();
+								JFrame showMead=new JFrame("Mean grade");
+								showMead.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+								showMead.setLayout(null);
+								showMead.setVisible(true);
+								JPanel showMeadP=new JPanel();
+								showMeadP.setLayout(null);
+								showMeadP.setBounds(0,0,600,700);
+								
+								JTable meanGrade = db.meanGradeTable(stu,per);
+								float test = db.getAverageGrade(meanGrade);
+								JScrollPane jsp= new JScrollPane(meanGrade);
+								jsp.setSize(new Dimension(600, 500));
+								JLabel mean = new JLabel("Weighted mean grade for this period is : "+test+". This student got a: ");
+								mean.setBounds(30, 520, 500, 20);
+								
+								showMeadP.add(jsp);
+								showMeadP.add(mean);
 
-					showMead.setLocation(900,500);
-					showMead.setSize(600,700);
-					showMead.setVisible(true);
-					showMead.add(showMeadP);
+								showMead.setResizable(false);
 
+								showMead.setLocation(900,500);
+								showMead.setSize(600,700);
+								showMead.setVisible(true);
+								showMead.add(showMeadP);
+							}
+						});
+						cancelbtn.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								meanGr.dispose();
+							}
+						});
+				} catch (SQLException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
 				}
-				else
-					JOptionPane.showMessageDialog(null, "You must select a grade!", "No data",JOptionPane.INFORMATION_MESSAGE);
 			}
 		});	
 	}
+	
 	public void addGrades(JButton bt,JTable table) {
 		bt.addActionListener(new ActionListener() {
 			@Override
@@ -183,31 +227,25 @@ public class Teachers extends UserInterface{
 				addGrP.setBounds(0,0,300,220);
 				addGr.setResizable(false);
 
-				
 			    JLabel leadeeName = new JLabel("Module name:");
 			    leadeeName.setBounds(30, 20, 130, 20);
 				JComboBox allMod = db.getPBox("Module");
 				allMod.setBounds(170, 20, 130, 20);
-				
 				
 			    JLabel stuId = new JLabel("Student:");
 			    stuId.setBounds(30, 50, 130, 20);
 				JComboBox stuIdBox = db.getPBox("Student");
 				stuIdBox.setBounds(170, 50, 130, 20);
 				
-				
 			    JLabel grade = new JLabel("Initial grade:");
 			    grade.setBounds(30, 80, 130, 20);
 			    JTextField grade1 = new JTextField();
 			    grade1.setBounds(170, 80, 130, 20);
 			    
-			    
-			    
 			    JLabel per = new JLabel("Period of study:");
 			    per.setBounds(30, 110, 130, 20);
 				JComboBox perBox = db.getPBox("Period_of_Study");
 				perBox.setBounds(170, 110, 130, 20);
-			    
 			    
 				addGrP.add(per);
 				addGrP.add(perBox);
@@ -218,7 +256,6 @@ public class Teachers extends UserInterface{
 				addGrP.add(stuIdBox);
 				addGrP.add(grade);
 				addGrP.add(grade1);
-				
 				
 				JButton okbtn = new JButton("Add");
 				okbtn.setBounds(30, 140, 80, 20);
@@ -258,6 +295,7 @@ public class Teachers extends UserInterface{
 		});
 		
 	}
+	
 	public void updateGrades(JButton bt,JTable table) {
 		bt.addActionListener(new ActionListener() {
 			
@@ -286,22 +324,17 @@ public class Teachers extends UserInterface{
 				gradeType.addItem("Repeat Grade");
 				gradeType.setBounds(170, 20, 130, 20);
 				
-				
 			    JLabel grade = new JLabel("Grade:");
 			    grade.setBounds(30, 50, 130, 20);
 			    JTextField grade1 = new JTextField();
 			    grade1.setBounds(170, 50, 130, 20);
 				
-				
-
-			    
 			    upGrP.add(gradeT);
 			    upGrP.add(gradeType);
 			    upGrP.add(grade);
 			    upGrP.add(grade1);
 				
-				
-				JButton okbtn = new JButton("Update");
+			    JButton okbtn = new JButton("Update");
 				okbtn.setBounds(30, 80, 80, 20);
 				JButton cancelbtn = new JButton("Cancel");
 				cancelbtn.setBounds(220, 80, 80, 20);
@@ -333,12 +366,6 @@ public class Teachers extends UserInterface{
 				else
 					JOptionPane.showMessageDialog(null, "You must select a grade!", "No data",JOptionPane.INFORMATION_MESSAGE);
 			}
-			
 		});
-		
 	}
-
-	
-
-	
 }
