@@ -754,8 +754,6 @@ public class Database {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
 		   
-		    
-		    
 		    String drop = "DROP TABLE IF EXISTS Tutor;";
 		    String dropDe = "DROP TABLE IF EXISTS Department;";
 		    String dropDee = "DROP TABLE IF EXISTS Teaching_Time;";
@@ -774,9 +772,6 @@ public class Database {
 //		    stmt.executeUpdate(dropDe);
 //
 //		    stmt.executeUpdate(dropDee);
-
-
-
 
 		    //database create
 			String acc = "CREATE TABLE IF NOT EXISTS `Login_Details`  (" +
@@ -1029,8 +1024,35 @@ public class Database {
 			stmt = con.prepareStatement(insertAcc1);
 
 			stmt.executeUpdate();
-
-
+			
+			//Adding Degree Classes TEMP
+			String degreeClassCommand="INSERT INTO `Degree_Class` (`fullname`, `minPercent`, `maxPercent`) VALUES ('First Class', '69.5', '100.0');";
+			stmt = con.prepareStatement(degreeClassCommand);
+			stmt.executeUpdate();
+			
+			degreeClassCommand="INSERT INTO `Degree_Class` (`fullname`, `minPercent`, `maxPercent`) VALUES ('Upper Second', '59.5', '69.4');";
+			stmt = con.prepareStatement(degreeClassCommand);
+			stmt.executeUpdate();
+			
+			degreeClassCommand="INSERT INTO `Degree_Class` (`fullname`, `minPercent`, `maxPercent`) VALUES ('Lower Second', '49.5', '59.4');";
+			stmt = con.prepareStatement(degreeClassCommand);
+			stmt.executeUpdate();
+			
+			degreeClassCommand="INSERT INTO `Degree_Class` (`fullname`, `minPercent`, `maxPercent`) VALUES ('Third Class', '45.5', '49.4');";
+			stmt = con.prepareStatement(degreeClassCommand);
+			stmt.executeUpdate();
+			
+			degreeClassCommand="INSERT INTO `Degree_Class` (`fullname`, `minPercent`, `maxPercent`) VALUES ('Pass Non Honours', '39.5', '44.4');";
+			stmt = con.prepareStatement(degreeClassCommand);
+			stmt.executeUpdate();
+			
+			degreeClassCommand="INSERT INTO `Degree_Class` (`fullname`, `minPercent`, `maxPercent`) VALUES ('Fail Bachelors', '0.0', '39.4');";
+			stmt = con.prepareStatement(degreeClassCommand);
+			stmt.executeUpdate();
+			
+			degreeClassCommand="INSERT INTO `Degree_Class` (`fullname`, `minPercent`, `maxPercent`) VALUES ('Fail Masters', '0.0', '49.4');";
+			stmt = con.prepareStatement(degreeClassCommand);
+			stmt.executeUpdate();
 			
 			DatabaseMetaData md = con.getMetaData();
 		    ResultSet rs = md.getTables(null, null, "%", null);
