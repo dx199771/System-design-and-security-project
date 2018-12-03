@@ -72,7 +72,8 @@ public class FindDrivers {
 //				  );
 //		//database insert test
 //		//account insert test
-		String insertAccounts="INSERT INTO `Accounts` (Username,Password,Privileges) VALUES ('3', '3', 'Administrators');";
+	    String password = SecurityHandler.hashPassword("3");
+		String insertAccounts="INSERT INTO `Accounts` (Username,Password,Privileges) VALUES ('3', " + password + ", 'Administrators');";
 		//stmt.executeUpdate(insertAccounts);
 		//departments insert test
 		String insertDepartments="INSERT INTO `Departments`(`Full name`,`Abbreviated code`,`Degree`) VALUES ('Computer Science', 'COM', 'test');";
