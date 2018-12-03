@@ -319,7 +319,6 @@ public class Database {
 			while(modIdRs.next()) {
 				modId1 = modIdRs.getInt(1);
 			}
-			
 
 			String insertGrade="INSERT INTO `Student_Grades` (`modID`,`regID`,`perId`,`initialGrade`) VALUES ('"+modId1+"','"+stu+"','"+perId+"','"+grade+"');";
 			stmt = con.prepareStatement(insertGrade);
@@ -330,15 +329,21 @@ public class Database {
 			ex.printStackTrace();
 		}
 	}
-	public void updateGrade(String type, int grade, int regId, int modId) {
+	
+	public void updateGrade(int regId, String modName, String type, float grade) {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
-			
+			String modIDCommand = "SELECT `modID` FROM `Module` WHERE `fullname` = '"+modName+"';";
+			stmt = con.prepareStatement(modIDCommand);
+			ResultSet modIdRs = stmt.executeQuery();
+			modIdRs.next();
+			int modID = modIdRs.getInt(1);
+
 			String update = null;
 			if(type.equals("Resit Grade"))
-				update = "UPDATE `Student_Grades` SET `resitGrade` = '"+grade+"' WHERE `modID` = '"+modId+"' AND `regID` = '"+regId+"';";
+				update = "UPDATE `Student_Grades` SET `resitGrade` = '"+grade+"' WHERE `modID` = '"+modID+"' AND `regID` = '"+regId+"';";
 			else
-				update = "UPDATE `Student_Grades` SET `resitGrade` = '"+grade+"' WHERE `modID` = '"+modId+"' AND `regID` = '"+regId+"';";
+				update = "UPDATE `Student_Grades` SET `resitGrade` = '"+grade+"' WHERE `modID` = '"+modID+"' AND `regID` = '"+regId+"';";
 			stmt = con.prepareStatement(update);
 			stmt.executeUpdate();
 			
@@ -347,6 +352,7 @@ public class Database {
 			ex.printStackTrace();
 		}
 	}
+	
 	public void insertModule (String modName,String abbCode,int cre, String time) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
