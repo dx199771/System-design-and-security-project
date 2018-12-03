@@ -330,9 +330,14 @@ public class Database {
 			ex.printStackTrace();
 		}
 	}
-	public void updateGrade(String type, int grade, int regId, int modId) {
+	
+	public void updateGrade(int regId, String modName, String type, float grade) {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
+			String modCommand = "SELECT `modID` FROM `Module` WHERE `fullname` = '"+modName+"';";
+			stmt = con.prepareStatement(modCommand);
+			ResultSet modIdRs = stmt.executeQuery();
+			int modId = modIdRs.getInt(1);
 			
 			String update = null;
 			if(type.equals("Resit Grade"))
