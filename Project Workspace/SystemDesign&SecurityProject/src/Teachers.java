@@ -2,7 +2,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.*;
-import java.util.Vector;
 import javax.swing.*;
 
 public class Teachers extends UserInterface {
@@ -371,7 +370,7 @@ public class Teachers extends UserInterface {
 					//Add panel to frame
 					upGr.add(upGrP);
 					
-					//Action listeners for the buttons
+					//Action listener for the okay button
 					okbtn.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
@@ -388,6 +387,8 @@ public class Teachers extends UserInterface {
 							upGr.dispose();
 						}
 					});
+					
+					//Action listener for the cancel button
 					cancelbtn.addActionListener(new ActionListener() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
