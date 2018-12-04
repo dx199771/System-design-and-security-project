@@ -331,7 +331,7 @@ public class Registrars extends UserInterface{
 							    String fName = forename1.getText();
 							    String emai = email1.getText();
 							    String tuto = (String) tutorBox.getSelectedItem();
-							    String accout = (String) accout1.getSelectedItem();
+							    int accout = Integer.parseInt((String) accout1.getSelectedItem());
 
 							    String dee = (String)degreeBox.getSelectedItem();
 

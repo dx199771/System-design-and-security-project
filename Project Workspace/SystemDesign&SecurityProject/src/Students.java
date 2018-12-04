@@ -8,11 +8,12 @@ import javax.swing.*;
 
 
 public class Students extends UserInterface{
-	Statement stmt = null;
-	Connection con = null;  // a Connection object
-	FindDrivers fd = new FindDrivers();
-	public void studentPage() {
-		
+	String userName = null;
+	String priviliges = null;
+	Database db = new Database();
+	public void studentPage(String username,String priv) {
+		userName = username;
+		priviliges = priv;
 		//background image set up
 		ImageIcon icon=new ImageIcon("src\\images\\admin.jpg");
 		JLabel label=new JLabel(icon);
@@ -28,7 +29,7 @@ public class Students extends UserInterface{
 
 		JPanel main =new JPanel();
 		
-		super.profile(main,frame);
+		super.profile(main,frame,username,priv);
 		JButton logOut = new JButton("Log Out");
 		logOut.setBounds(1780,60,100,30);
 		frame.add(logOut);
@@ -65,7 +66,7 @@ public class Students extends UserInterface{
 		public void actionPerformed(ActionEvent e) {
 			updateJSwing(main);
 			try {
-				profile(main,fr);
+				profile(main,fr,userName, priviliges);
 			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -98,43 +99,19 @@ public class Students extends UserInterface{
 	public void students(JPanel main,JFrame frame) throws Exception {
 		ResultSet studentsRs;
 		//find drivers
-		findDriver();
-		String sql ="select * from Students";
-		studentsRs = stmt.executeQuery(sql);
-		if(!(studentsRs.next()))
-		{
-		   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
-		}
-		ResultSetMetaData rsmd= (ResultSetMetaData) studentsRs.getMetaData();
-		Vector rows = new Vector();
-		Vector columnHeads=new Vector();	
-		
-		for(int i=1;i<=rsmd.getColumnCount();i++)
-		{
-		    columnHeads.addElement(rsmd.getColumnName(i));
-		}
-		do{
-		     rows.addElement(getNextRow(studentsRs,rsmd));
-		}while(studentsRs.next());
-		
-		JTable table = new JTable(rows,columnHeads);
-		JScrollPane jsp= new JScrollPane(table);
 
+		
+		
+		JTable table = db.studentTable(userName);
+		JScrollPane jsp= new JScrollPane(table);
+		
 		jsp.setSize(new Dimension(1577, 588));
-		studentsRs.close();		
-		con.close();
-		stmt.close();
-		
-		JButton addStudents= new JButton("Add student");
-		JButton removeStudent= new JButton("Remove student");
-		addStudents.setBounds(0,738, 200, 50);
-		removeStudent.setBounds(250,738, 200, 50);
-		
+
+
 
 		main.setBounds(343,146, 1577, 788);
 		main.setVisible(true); 
-		main.add(addStudents);
-		main.add(removeStudent);
+
 		main.add(jsp);
 		
 	}
@@ -150,18 +127,8 @@ public class Students extends UserInterface{
 		//profile.setIcon(new ImageIcon("C:\\Users\\User\\Desktop\\pb.png"));			
 	}
 	
-	public void updateJSwing(JPanel main) {
-		main.removeAll();
-		main.repaint();
-		main.updateUI();
-	}
+
 	
-	private Vector getNextRow(ResultSet rs,ResultSetMetaData rsmd) throws SQLException{
-		Vector currentRow=new Vector();
-		for(int i=1;i<=rsmd.getColumnCount();i++){
-			currentRow.addElement(rs.getString(i));
-		}
-		return currentRow;
-	}
+
 
 }

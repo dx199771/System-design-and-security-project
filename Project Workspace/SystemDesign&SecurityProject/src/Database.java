@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Vector;
 
 import javax.swing.JComboBox;
@@ -45,7 +44,7 @@ public class Database {
 			}	
 		}
 		else if(role == "Login_Details") {
-			String sql ="SELECT `username` from "+role+";";
+			String sql ="SELECT `accountid` from "+role+";";
 			stmt = con.prepareStatement(sql);
 
 			ResultSet depRs = stmt.executeQuery();
@@ -54,10 +53,10 @@ public class Database {
 			   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
 			}
 			else {
-				DepBox.addItem(depRs.getString("username"));
+				DepBox.addItem(depRs.getString("accountid"));
 
 				while(depRs.next()) {
-					DepBox.addItem(depRs.getString("username"));
+					DepBox.addItem(depRs.getString("accountid"));
 				}	
 			}	
 		}
@@ -358,7 +357,7 @@ public class Database {
 			ex.printStackTrace();
 		}
 	}
-	public void insertStudent(String tit,String sName,String fName,String emai,String tuto,String account,String dee) {
+	public void insertStudent(String tit,String sName,String fName,String emai,String tuto,int accout,String dee) {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
 			int tutoId = 0;
@@ -377,6 +376,10 @@ public class Database {
 			stmt = con.prepareStatement(insertStudent);
 
 			stmt.executeUpdate();
+			
+			
+			
+			
 			//insert into student_degree table
 			String regId = "SELECT `regID` FROM `Student` WHERE `email` = '"+emai+"';";
 			stmt = con.prepareStatement(regId);
@@ -393,6 +396,11 @@ public class Database {
 			while(deeIdRs.next()) {
 				deeIdRs1 = deeIdRs.getInt(1);
 			}
+			
+			String updateAccount = "UPDATE `Login_Details` SET `regID` = '"+regIdRs1+"' WHERE `accountid` = '"+accout+"';";
+			stmt = con.prepareStatement(updateAccount);
+			stmt.executeUpdate();
+			
 			String insertStudentDee="INSERT INTO `Student_Degree_Link` (`degID`,`regID`) VALUES ('"+deeIdRs1+"','"+regIdRs1+"');";			
 			stmt = con.prepareStatement(insertStudentDee);
 
@@ -591,6 +599,61 @@ public class Database {
 			ex.printStackTrace();
 		}
 	}
+	public int getStudentId(String userId) {
+		int accRs1 = 0;
+
+		try(Connection con =DriverManager.getConnection(
+				Host, UserName, PassWord)){	
+			String sqlCom = "SELECT `regID` FROM Login_Details WHERE `username` = '"+userId+"';";
+			stmt = con.prepareStatement(sqlCom);
+			ResultSet accRs = stmt.executeQuery();
+			while(accRs.next()) {
+				accRs1 = accRs.getInt(1);
+			}
+			
+		return accRs1;
+		}
+		catch (SQLException ex) {    
+			ex.printStackTrace();
+			return accRs1;
+		}
+	}
+	public JTable studentTable(String userId) {
+		try(Connection con =DriverManager.getConnection(
+				Host, UserName, PassWord)){	
+			int regID = getStudentId(userId);
+			System.out.print(userId);
+			String sqlCom = "SELECT * FROM `Student_Grades` WHERE `regID` = '"+regID+"';";
+			stmt = con.prepareStatement(sqlCom);
+			ResultSet accRs = stmt.executeQuery();
+
+			if(!(accRs.next()))
+			{
+			   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
+			}
+			ResultSetMetaData rsmd= (ResultSetMetaData) accRs.getMetaData();
+			Vector<Vector<String>> rows = new Vector<Vector<String>>();
+			Vector<String> columnHeads=new Vector<String>();	
+			
+			for(int i=1;i<=rsmd.getColumnCount();i++)
+			{
+			    columnHeads.addElement(rsmd.getColumnName(i));
+			}
+			do{
+			     rows.addElement(getNextRow(accRs,rsmd));
+			}while(accRs.next());
+			
+			JTable table = new JTable(rows,columnHeads);
+			
+
+			return table;
+		}
+		catch (SQLException ex) {    
+			ex.printStackTrace();
+			JTable table = null;
+			return table;
+		}
+	}
 	//display the table in interface
 	public JTable displayTable (String role){
 		try(Connection con =DriverManager.getConnection(
@@ -700,6 +763,7 @@ public class Database {
 		return currentRow;
 	}
 	
+
 	
 	public void create() {
 		try(Connection con =DriverManager.getConnection(
@@ -735,9 +799,9 @@ public class Database {
 			   " `username` varchar(20) NOT NULL," +
 			   " `password` varchar(128) NOT NULL," +
 			   " `pivilegeID` varchar(15) NOT NULL," +
-			   " `regid` int," +
+			   " `regID` int," +
 			  // " PRIMARY KEY (username)," +
-			   " FOREIGN KEY (`regid`) REFERENCES Student(`regid`)" +
+			   " FOREIGN KEY (`regID`) REFERENCES Student(`regID`)" +
 			   ");";
 		
 			String dep = "CREATE TABLE IF NOT EXISTS `Department` (" +
@@ -842,17 +906,17 @@ public class Database {
 			  " FOREIGN KEY (`degID`) REFERENCES Degree(`degID`)," +
 			  " FOREIGN KEY (`modID`) REFERENCES Module(`modID`));";
 
-			String stuClass = "CREATE TABLE IF NOT EXISTS `Student_Degree_Link` (" +
+			String stuClass = "CREATE TABLE IF NOT EXISTS `Student_Class_Link` (" +
 		     " `regID` int NOT NULL," +
 		     " `classID` int NOT NULL," +
 		     " FOREIGN KEY (`regID`) REFERENCES Student(`regID`)," +
 		     " FOREIGN KEY (`classID`) REFERENCES Degree_Class(`classID`));";
 
-			String stuLoginLink = "CREATE TABLE IF NOT EXISTS `Student_Login_link` (" +
-	         " `userID` int NOT NULL," +
-	         " `regID` int NOT NULL," +
-	         " FOREIGN KEY (`userID`) REFERENCES Login_Details(`accountid`)," +
-	         " FOREIGN KEY (`regID`) REFERENCES Student(`regID`));";
+//			String stuLoginLink = "CREATE TABLE IF NOT EXISTS `Student_Login_link` (" +
+//	         " `userID` int NOT NULL," +
+//	         " `regID` int NOT NULL," +
+//	         " FOREIGN KEY (`userID`) REFERENCES Login_Details(`accountid`)," +
+//	         " FOREIGN KEY (`regID`) REFERENCES Student(`regID`));";
 			
 			String priv = "CREATE TABLE IF NOT EXISTS `Privileges` (" +
 		     " `privilegeID` int  NOT NULL PRIMARY KEY AUTO_INCREMENT," + 
@@ -997,5 +1061,6 @@ public class Database {
 		Database db = new Database();
 		db.create();
 	}
+
 
 }

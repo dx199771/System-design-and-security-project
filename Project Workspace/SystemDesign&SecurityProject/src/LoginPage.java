@@ -110,8 +110,8 @@ public class  LoginPage{
 							}
 							else if(rs.getString("pivilegeID").equals("4")){
 							Privileges = "Student";
-							//Students student = new Students(getUserName(),getPriviliges());
-							//student.studentPage();
+							Students student = new Students();
+							student.studentPage(getUserName(),getPriviliges());
 							}
 							
 						}
