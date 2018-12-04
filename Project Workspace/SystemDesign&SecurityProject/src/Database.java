@@ -240,12 +240,22 @@ public class Database {
 			while(levelIdRs.next()) {
 				levelId1 = levelIdRs.getInt(1);
 			}
-			String insertDee="INSERT INTO `Degree` (`fullname`,`code`,`entry`,`studyID`) VALUES ('"+deeName+"','"+abbCode+"','"+entry1+"','"+ levelId1+"');";
-			System.out.print(insertDee);
-			stmt = con.prepareStatement(insertDee);
-			stmt.executeUpdate();
-		
-		
+
+			
+			String checkExistance = "SELECT COUNT(`degID`) as 'total' FROM `Degree` WHERE `fullname` = '"+deeName+"' or 'code' = '" + abbCode + "';";
+			stmt = con.prepareStatement(checkExistance);
+
+      ResultSet rs = stmt.executeQuery();
+			rs.next();
+			
+			if(rs.getInt("total") <= 0) {
+				String insertDee="INSERT INTO `Degree` (`fullname`,`code`,`entry`,`studyID`) VALUES ('"+deeName+"','"+abbCode+"','"+entry1+"','"+ levelId1+"');";
+			  stmt = con.prepareStatement(insertDee);
+			  stmt.executeUpdate();
+				}else {
+				JOptionPane.showMessageDialog(null, "A degree with that name/code already exists.", "Degree already exists",JOptionPane.WARNING_MESSAGE);
+			}
+
 		}
 		catch (SQLException ex) {    
 			ex.printStackTrace();
@@ -254,9 +264,21 @@ public class Database {
 	public void insertDepa (String depName,String abbCode) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){
-		String insertDep="INSERT INTO `Department` (`fullname`,`code`) VALUES ('"+depName+"','"+abbCode+"');";
-		stmt = con.prepareStatement(insertDep);
-		stmt.executeUpdate();
+
+			
+			String checkExistance = "SELECT COUNT(`depID`) as 'total' FROM `Department` WHERE `fullname` = '"+depName+"' or 'code' = '" + abbCode + "';";
+      stmt = con.prepareStatement(checkExistance);
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+			
+			if(rs.getInt("total") <= 0) {
+				String insertDep="INSERT INTO `Department` (`fullname`,`code`) VALUES ('"+depName+"','"+abbCode+"');";
+		    stmt = con.prepareStatement(insertDep);
+        stmt.executeUpdate();
+			}else {
+				JOptionPane.showMessageDialog(null, "A department with that name/code already exists.", "Department already exists",JOptionPane.WARNING_MESSAGE);
+			}
+	
 
 		}
 		catch (SQLException ex) {    
@@ -266,12 +288,21 @@ public class Database {
 	public void insertAccount (String accName,String password,int privil) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
-		String insertAccounts="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`) VALUES ('"+accName+"','"+password+"','"+privil+"');";
-		stmt = con.prepareStatement(insertAccounts);
 
-		stmt.executeUpdate();
+		
+			String checkExistance = "SELECT COUNT(`accountid`) as 'total' FROM `Login_Details` WHERE `username` = '"+accName+"';";
+      stmt = con.prepareStatement(checkExistance);
+			ResultSet rs = stmt.executeQuery();
+			rs.next();
+			
+			if(rs.getInt("total") <= 0) {
+				String insertAccounts="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`) VALUES ('"+accName+"','"+password+"','"+privil+"');";
+    		stmt = con.prepareStatement(insertAccounts);   
+				stmt.executeUpdate();
+			}else {
+				JOptionPane.showMessageDialog(null, "An account with that username already exists.", "Account already exists",JOptionPane.WARNING_MESSAGE);
+			}
 
-	
 		}
 		catch (SQLException ex) {    
 			ex.printStackTrace();
@@ -287,7 +318,6 @@ public class Database {
 			while(modIdRs.next()) {
 				modId1 = modIdRs.getInt(1);
 			}
-			
 
 			String insertGrade="INSERT INTO `Student_Grades` (`modID`,`regID`,`perId`,`initialGrade`) VALUES ('"+modId1+"','"+stu+"','"+perId+"','"+grade+"');";
 			stmt = con.prepareStatement(insertGrade);
@@ -298,15 +328,21 @@ public class Database {
 			ex.printStackTrace();
 		}
 	}
-	public void updateGrade(String type, int grade, int regId, int modId) {
+	
+	public void updateGrade(int regId, String modName, String type, float grade) {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
-			
+			String modIDCommand = "SELECT `modID` FROM `Module` WHERE `fullname` = '"+modName+"';";
+			stmt = con.prepareStatement(modIDCommand);
+			ResultSet modIdRs = stmt.executeQuery();
+			modIdRs.next();
+			int modID = modIdRs.getInt(1);
+
 			String update = null;
 			if(type.equals("Resit Grade"))
-				update = "UPDATE `Student_Grades` SET `resitGrade` = '"+grade+"' WHERE `modID` = '"+modId+"' AND `regID` = '"+regId+"';";
+				update = "UPDATE `Student_Grades` SET `resitGrade` = '"+grade+"' WHERE `modID` = '"+modID+"' AND `regID` = '"+regId+"';";
 			else
-				update = "UPDATE `Student_Grades` SET `resitGrade` = '"+grade+"' WHERE `modID` = '"+modId+"' AND `regID` = '"+regId+"';";
+				update = "UPDATE `Student_Grades` SET `resitGrade` = '"+grade+"' WHERE `modID` = '"+modID+"' AND `regID` = '"+regId+"';";
 			stmt = con.prepareStatement(update);
 			stmt.executeUpdate();
 			
@@ -315,6 +351,7 @@ public class Database {
 			ex.printStackTrace();
 		}
 	}
+	
 	public void insertModule (String modName,String abbCode,int cre, String time) throws SQLException {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
@@ -334,10 +371,21 @@ public class Database {
 		while(timeIdRs.next()) {
 			timeIdRs1 = timeIdRs.getString(1);
 		}
-		String insertModule="INSERT INTO `Module` (`fullname`,`code`,`creditID`,`timeID`) VALUES ('"+modName+"','"+abbCode+"','"+creIdRs1+"','"+timeIdRs1+"');";
-		stmt = con.prepareStatement(insertModule);
+		
+		String checkExistance = "SELECT COUNT(`modID`) as 'total' FROM `Degree` WHERE `fullname` = '"+modName+"' or 'code' = '" + abbCode + "';";
+    stmt = con.prepareStatement(checkExistance);
+		ResultSet rs = stmt.executeQuery();
+		rs.next();
+		
+		if(rs.getInt("total") <= 0) {
+			String insertModule="INSERT INTO `Module` (`fullname`,`code`,`creditID`,`timeID`) VALUES ('"+modName+"','"+abbCode+"','"+creIdRs1+"','"+timeIdRs1+"');";
+		  stmt = con.prepareStatement(insertModule);
+			stmt.executeUpdate();
+		}else {
+			JOptionPane.showMessageDialog(null, "A module with that name/code already exists.", "Module already exists",JOptionPane.WARNING_MESSAGE);
+		}
+		
 
-		stmt.executeUpdate();
 		}
 		catch (SQLException ex) {    
 			ex.printStackTrace();
@@ -713,11 +761,12 @@ public class Database {
 
 		return cGrade/(tb.getRowCount());
 	}
+	
 	public JTable meanGradeTable (int regID,int perID){
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){	
 	
-		String sqlCom = "SELECT * FROM `Student_Grades` WHERE `regID` = '"+regID+"' AND `perID` = '"+perID+"';";
+		String sqlCom = "SELECT * FROM `Student_Grades` WHERE `regID` = '"+ regID +"' AND `perID` = '"+ perID +"';";
 		stmt = con.prepareStatement(sqlCom);
 
 		ResultSet accRs = stmt.executeQuery();
@@ -754,6 +803,15 @@ public class Database {
 
 	}
 	
+	public void addDegreeClass (int regID, float grade) {
+		try(Connection con =DriverManager.getConnection(
+				Host, UserName, PassWord)){	
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	//get next row in database table
 	private Vector<String> getNextRow(ResultSet rs,ResultSetMetaData rsmd) throws SQLException{
 		Vector<String> currentRow=new Vector<String>();
@@ -769,8 +827,6 @@ public class Database {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){		
 		   
-		    
-		    
 		    String drop = "DROP TABLE IF EXISTS Tutor;";
 		    String dropDe = "DROP TABLE IF EXISTS Department;";
 		    String dropDee = "DROP TABLE IF EXISTS Teaching_Time;";
@@ -789,9 +845,6 @@ public class Database {
 //		    stmt.executeUpdate(dropDe);
 //
 //		    stmt.executeUpdate(dropDee);
-
-
-
 
 		    //database create
 			String acc = "CREATE TABLE IF NOT EXISTS `Login_Details`  (" +
@@ -1021,7 +1074,7 @@ public class Database {
 			
 			String insertStuMod="INSERT INTO `Student_Grades` (`modID`,`regID`,`perID`,`initialGrade`,`resitGrade`,`repeatGrade`)VALUES ('1','1','1','0','20','40');";
 			stmt = con.prepareStatement(insertStuMod);
-			//stmt.executeUpdate();
+			stmt.executeUpdate();
 			
 			String insertPer="INSERT INTO `Period_of_Study` (`label`,`startDate`,`endDate`,`studyID`,`regID`)VALUES ('A','2017/01/08','2018/01/04','1','1');";
 			stmt = con.prepareStatement(insertPer);
@@ -1033,16 +1086,46 @@ public class Database {
 
 			stmt.executeUpdate();
 			
-			String insertAcc="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`)VALUES ('1','1','1');";
+		    String password = SecurityHandler.hashPassword("1");
+			String insertAcc="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`)VALUES ('1','" + password + "','1');";
 			stmt = con.prepareStatement(insertAcc);
 
 			stmt.executeUpdate();
-			String insertAcc1="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`)VALUES ('3','3','2');";
+			
+		    password = SecurityHandler.hashPassword("3");
+			String insertAcc1="INSERT INTO `Login_Details` (`username`,`password`,`pivilegeID`)VALUES ('3','" + password + "','2');";
 			stmt = con.prepareStatement(insertAcc1);
 
 			stmt.executeUpdate();
-
-
+			
+			//Adding Degree Classes TEMP
+			String degreeClassCommand="INSERT INTO `Degree_Class` (`fullname`, `minPercent`, `maxPercent`) VALUES ('First Class', '69.5', '100.0');";
+			stmt = con.prepareStatement(degreeClassCommand);
+			stmt.executeUpdate();
+			
+			degreeClassCommand="INSERT INTO `Degree_Class` (`fullname`, `minPercent`, `maxPercent`) VALUES ('Upper Second', '59.5', '69.4');";
+			stmt = con.prepareStatement(degreeClassCommand);
+			stmt.executeUpdate();
+			
+			degreeClassCommand="INSERT INTO `Degree_Class` (`fullname`, `minPercent`, `maxPercent`) VALUES ('Lower Second', '49.5', '59.4');";
+			stmt = con.prepareStatement(degreeClassCommand);
+			stmt.executeUpdate();
+			
+			degreeClassCommand="INSERT INTO `Degree_Class` (`fullname`, `minPercent`, `maxPercent`) VALUES ('Third Class', '45.5', '49.4');";
+			stmt = con.prepareStatement(degreeClassCommand);
+			stmt.executeUpdate();
+			
+			degreeClassCommand="INSERT INTO `Degree_Class` (`fullname`, `minPercent`, `maxPercent`) VALUES ('Pass Non Honours', '39.5', '44.4');";
+			stmt = con.prepareStatement(degreeClassCommand);
+			stmt.executeUpdate();
+			
+			degreeClassCommand="INSERT INTO `Degree_Class` (`fullname`, `minPercent`, `maxPercent`) VALUES ('Fail Bachelors', '0.0', '39.4');";
+			stmt = con.prepareStatement(degreeClassCommand);
+			stmt.executeUpdate();
+			
+			degreeClassCommand="INSERT INTO `Degree_Class` (`fullname`, `minPercent`, `maxPercent`) VALUES ('Fail Masters', '0.0', '49.4');";
+			stmt = con.prepareStatement(degreeClassCommand);
+			stmt.executeUpdate();
 			
 			DatabaseMetaData md = con.getMetaData();
 		    ResultSet rs = md.getTables(null, null, "%", null);
