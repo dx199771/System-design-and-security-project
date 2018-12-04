@@ -9,7 +9,12 @@ public class Teachers extends UserInterface {
 	String userName = null;
 	String priviliges = null;
 	Database db = new Database();
-
+	
+	/**
+	 * 
+	 * @param username
+	 * @param priv
+	 */
 	public void teacherPage(String username, String priv) {
 		userName = username;
 		priviliges = priv;
@@ -48,6 +53,12 @@ public class Teachers extends UserInterface {
 		});
 	}
 
+	/**
+	 * 
+	 * @param main
+	 * @param fr
+	 * @return
+	 */
 	public JPanel navigation(JPanel main, JFrame fr) {
 		JPanel nav = new JPanel();
 		// nav layout set up
@@ -97,18 +108,22 @@ public class Teachers extends UserInterface {
 		return nav;
 	}
 
+	/**
+	 * 
+	 * @param main
+	 * @param frame
+	 * @throws Exception
+	 */
 	public void grade(JPanel main, JFrame frame) throws Exception {
 		String role = "Student_Grades";
 		JTable table = db.displayTable(role);
-		
-		GridLayout grid = new GridLayout();
 
+		main.setLayout(new GridLayout());
+    
 		JButton addGrade = new JButton("Add Grade");
 		JButton updateGrade = new JButton("Update Grade");
 		JButton meanGrade = new JButton("Calculate Mean Grade");
-		
-		main.setLayout(grid);
-		
+
 		addGrades(addGrade, table);
 		updateGrades(updateGrade, table);
 		meanGrade(meanGrade, table);
@@ -119,6 +134,11 @@ public class Teachers extends UserInterface {
 		main.add(meanGrade);
 	}
 
+	/**
+	 * 
+	 * @param bt
+	 * @param table
+	 */
 	public void meanGrade(JButton bt, JTable table) {
 		bt.addActionListener(new ActionListener() {
 			@Override
@@ -208,6 +228,11 @@ public class Teachers extends UserInterface {
 		});
 	}
 
+	/**
+	 * 
+	 * @param bt
+	 * @param table
+	 */
 	public void addGrades(JButton bt, JTable table) {
 		bt.addActionListener(new ActionListener() {
 			@Override
@@ -307,7 +332,6 @@ public class Teachers extends UserInterface {
 				upGr.setVisible(true);
 				upGr.setLocation(900, 500);
 				upGr.setSize(350, 350);
-				upGr.setVisible(true);
 
 				try {
 					//Create and initialise panel
@@ -370,6 +394,9 @@ public class Teachers extends UserInterface {
 					
 					//Add panel to frame
 					upGr.add(upGrP);
+					
+					//Set frame to visible
+					upGr.setVisible(true);
 					
 					//Action listener for the okay button
 					okbtn.addActionListener(new ActionListener() {
