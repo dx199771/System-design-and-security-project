@@ -740,6 +740,15 @@ public class Database {
 
 	}
 	
+	public void addDegreeClass (int regID, float grade) {
+		try(Connection con =DriverManager.getConnection(
+				Host, UserName, PassWord)){	
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	//get next row in database table
 	private Vector<String> getNextRow(ResultSet rs,ResultSetMetaData rsmd) throws SQLException{
 		Vector<String> currentRow=new Vector<String>();

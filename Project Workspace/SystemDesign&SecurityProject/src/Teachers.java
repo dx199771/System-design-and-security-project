@@ -117,16 +117,13 @@ public class Teachers extends UserInterface {
 	public void grade(JPanel main, JFrame frame) throws Exception {
 		String role = "Student_Grades";
 		JTable table = db.displayTable(role);
-		
-		main.setLayout(new GridLayout());
 
+		main.setLayout(new GridLayout());
+    
 		JButton addGrade = new JButton("Add Grade");
 		JButton updateGrade = new JButton("Update Grade");
 		JButton meanGrade = new JButton("Calculate Mean Grade");
-		
-		addGrade.setBounds(0, 738, 200, 50);
-		updateGrade.setBounds(250, 738, 200, 50);
-		meanGrade.setBounds(500, 738, 400, 50);
+
 		addGrades(addGrade, table);
 		updateGrades(updateGrade, table);
 		meanGrade(meanGrade, table);
