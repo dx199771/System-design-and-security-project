@@ -109,15 +109,12 @@ public class Registrars extends UserInterface{
 		
 		JButton addStudents= new JButton("Add student");
 		JButton removeStudent= new JButton("Remove student");
-		JButton regStudent= new JButton("Register student");
 		JButton optional= new JButton("Add/Drop optional module(s)");
 
 		addStudents.setBounds(0,738, 200, 50);
 		removeStudent.setBounds(250,738, 200, 50);
-		regStudent.setBounds(500,738, 200, 50);
-		optional.setBounds(750,738, 200, 50);
+		optional.setBounds(500,738, 200, 50);
 
-		registerStudent(regStudent,table);
 		String itemName = "Student";
 
 		addStudent(addStudents,main,frame);
@@ -128,7 +125,6 @@ public class Registrars extends UserInterface{
 		main.setVisible(true); 
 		main.add(addStudents);
 		main.add(removeStudent);
-		main.add(regStudent);
 		main.add(optional);
 
 		main.add(jsp);
@@ -364,153 +360,7 @@ public class Registrars extends UserInterface{
 			}
 		});
 	}
-	private void registerStudent(JButton remmovebt,JTable table) throws Exception {
-		remmovebt.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int selected = table.getSelectedRow();
-				
-				if(selected != -1) {
-					int degId =  Integer.parseInt((String) table.getValueAt(selected,0));
-
-				if(db.getCurrentCredit(degId)==db.getRequireCredit(degId)) {
-					try {
-					JFrame regStudent=new JFrame("Register student");
-					regStudent.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					regStudent.setLayout(null);
-					regStudent.setVisible(true);
 	
-					JPanel regStudentP=new JPanel();
-					regStudentP.setLayout(null);
-					regStudentP.setBounds(0,0,500,220);
-					regStudent.setResizable(false);
-
-					JLabel sDate = new JLabel("Start date(YYYY/MM/DD):");
-	
-			        String[] listData = new String[]{"2018", "2019", "2020", "2021","2022","2023","2024","2025"};
-			        final JComboBox<String> startYear = new JComboBox<String>(listData);
-			        startYear.setBounds(250, 20, 60, 20);
-			        String[] listData2= new String[]{"01", "02", "03", "04","05", "06", "07","08", "09", "10","11", "12"};
-			        final JComboBox<String> startMonth = new JComboBox<String>(listData2);
-			        startMonth.setBounds(310, 20, 60, 20);
-			        String[] listData3 = new String[]{"01", "02", "03", "04","05", "06", "07","08", "09", "10","11", "12"+
-			        		"13", "14", "15", "16","17", "18", "19","20", "21", "22","23", "24", "25","26", "27", "28","29", "30", "31"};
-			        final JComboBox<String> startDay = new JComboBox<String>(listData3);
-			        startDay.setBounds(370, 20, 60, 20);	
-					
-					JLabel eDate = new JLabel("End date:");
-			        String[] listData4 = new String[]{"2018", "2019", "2020", "2021","2022","2023","2024","2025"};
-			        final JComboBox<String> endYear = new JComboBox<String>(listData4);
-			        endYear.setBounds(250, 50, 60, 20);
-			        String[] listData5= new String[]{"01", "02", "03", "04","05", "06", "07","08", "09", "10","11", "12"};
-			        final JComboBox<String> endMonth = new JComboBox<String>(listData5);
-			        endMonth.setBounds(310, 50, 60, 20);
-			        String[] listData6 = new String[]{"01", "02", "03", "04","05", "06", "07","08", "09", "10","11", "12"+
-			        		"13", "14", "15", "16","17", "18", "19","20", "21", "22","23", "24", "25","26", "27", "28","29", "30", "31"};
-			        final JComboBox<String> endDay = new JComboBox<String>(listData6);
-			        endDay.setBounds(370, 50, 60, 20);
-	
-	
-					sDate.setBounds(30, 20, 220, 20);
-					eDate.setBounds(30, 50, 220, 20);
-					
-					
-					JLabel label = new JLabel("Label:");
-					label.setBounds(30, 80, 220, 20);
-	
-					String[] listData7 = new String[]{"A", "B", "C", "D","E", "F", "G","H", "I", "J","K", "L"};
-			        final JComboBox<String> labelBox = new JComboBox<String>(listData7);
-			        labelBox.setBounds(250, 80, 60, 20);
-					
-					JLabel level = new JLabel("Level of Study:");
-					level.setBounds(30, 110, 220, 20);
-			        
-			       				
-					JComboBox levelBox = db.getPBox("Level_of_Study");
-	
-					levelBox.setBounds(250, 110, 60, 20);
-	
-					
-					regStudentP.add(sDate);
-					
-					regStudentP.add(startYear);
-					regStudentP.add(startMonth);
-					regStudentP.add(startDay);
-					regStudentP.add(endYear);
-					regStudentP.add(endMonth);
-					regStudentP.add(endDay);
-					regStudentP.add(eDate);
-					regStudentP.add(labelBox);
-					regStudentP.add(label);
-					
-					regStudentP.add(levelBox);
-					regStudentP.add(level);
-					
-					
-					JLabel currentCredit = new JLabel("Your current credit:"+db.getCurrentCredit(degId));
-					currentCredit.setBounds(30, 140, 220, 20);
-					JLabel requireCredit = new JLabel("Your required credit:"+db.getRequireCredit(degId));
-					requireCredit.setBounds(250, 140, 220, 20);
-					
-					
-					
-					 
-				    JButton okbtn = new JButton("Confirm");
-				    okbtn.setBounds(330, 170, 80, 20);
-				    JButton cancelbtn = new JButton("Cancel");
-				    cancelbtn.setBounds(160, 170, 80, 20);
-	
-	
-				    regStudentP.add(currentCredit);
-				    regStudentP.add(requireCredit);
-	
-				    regStudentP.add(okbtn);
-				    regStudentP.add(cancelbtn);
-				    regStudent.setLocation(900,500);
-				    regStudent.setSize(500,240);
-				    regStudent.setVisible(true);
-				    regStudent.add(regStudentP);
-				    okbtn.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-	
-							
-							String startDate = (String) startYear.getSelectedItem()+"-"+(String) startMonth.getSelectedItem()+"-"+startDay.getSelectedItem();
-							String endDate = (String) endYear.getSelectedItem()+"-"+(String) endMonth.getSelectedItem()+"-"+endDay.getSelectedItem();
-							char label = ((String) labelBox.getSelectedItem()).charAt(0);
-							String level = (String) levelBox.getSelectedItem();
-							System.out.print(startDate);
-							db.registerStudent(startDate, endDate,label, level,degId);
-							System.out.println("Success");
-							regStudent.dispose();
-								
-								
-						}
-					});
-					cancelbtn.addActionListener(new ActionListener() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							regStudent.dispose();
-						}
-					});
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
-				else {
-					String mess = "Your current credits is "+db.getCurrentCredit(degId)+", your required credits is "+db.getRequireCredit(degId)+
-							", you should choose one or more optional module.";
-					JOptionPane.showMessageDialog(null, mess, "No data",JOptionPane.INFORMATION_MESSAGE);
-
-				}
-				}
-				else
-					JOptionPane.showMessageDialog(null, "You must select a student!", "No data",JOptionPane.INFORMATION_MESSAGE);
-			}
-		});
-	
-	}
 
 
 	

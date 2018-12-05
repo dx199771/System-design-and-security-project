@@ -77,6 +77,23 @@ public class Database {
 				}	
 			}	
 		}
+		else if(role == "Period_of_Study") {
+			String sql ="SELECT `perID` from "+role+";";
+			stmt = con.prepareStatement(sql);
+
+			ResultSet depRs = stmt.executeQuery();
+			if(!(depRs.next()))
+			{
+			   JOptionPane.showMessageDialog(null, "No data!", "No data",JOptionPane.INFORMATION_MESSAGE);
+			}
+			else {
+				DepBox.addItem(depRs.getString("perID"));
+
+				while(depRs.next()) {
+					DepBox.addItem(depRs.getString("perID"));
+				}	
+			}	
+		}
 		else if(role == "Student") {
 			String sql ="SELECT `regID` from "+role+";";
 			stmt = con.prepareStatement(sql);
@@ -570,7 +587,28 @@ public class Database {
 
 		}
 	}
-	public void registerStudent(String startDate, String endDate, char label, String level, int degId) {
+	public void graduate(int degId,String classID) {
+		try(Connection con =DriverManager.getConnection(
+				Host, UserName, PassWord)){
+			String classID1 = "SELECT `classID` FROM `Degree_Class` WHERE `fullname` = '"+classID+"';";
+			stmt = con.prepareStatement(classID1);
+			int cre =0;
+			ResultSet classId = stmt.executeQuery();
+			while(classId.next()) {
+				cre = classId.getInt(1);
+				System.out.print(cre);
+
+			}
+			String insertAccounts="INSERT INTO `Student_Class_Link` (`regID`,`classID`) VALUES ('"+degId+"','"+cre+"');";
+    		stmt = con.prepareStatement(insertAccounts);   
+    		stmt.executeUpdate();
+		}	
+		catch (SQLException ex) {    
+			ex.printStackTrace();
+
+		}
+	}
+	public void registerStudent(String startDate, String endDate, char label, String level, int degId,String status) {
 		try(Connection con =DriverManager.getConnection(
 				Host, UserName, PassWord)){	
 			
@@ -586,7 +624,7 @@ public class Database {
 				levelId1 = levelIdRs.getInt(1);
 			}
 
-			String registerStu="INSERT INTO `Period_of_Study` (`label`,`startDate`,`endDate`,`studyID`,`regID`) VALUES ('"+label+"','"+startDate+"','"+endDate+"','"+levelId1+"','"+degId+"');";			
+			String registerStu="INSERT INTO `Period_of_Study` (`label`,`startDate`,`endDate`,`studyID`,`regID`,`status`) VALUES ('"+label+"','"+startDate+"','"+endDate+"','"+levelId1+"','"+degId+"','"+status+"');";			
 			stmt = con.prepareStatement(registerStu);
 
 			stmt.executeUpdate();
@@ -803,14 +841,14 @@ public class Database {
 
 	}
 	
-	public void addDegreeClass (int regID, float grade) {
-		try(Connection con =DriverManager.getConnection(
-				Host, UserName, PassWord)){	
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
+//	public void addDegreeClass (int regID, float grade) {
+//		try(Connection con =DriverManager.getConnection(
+//				Host, UserName, PassWord)){	
+//
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//	}
 	
 	//get next row in database table
 	private Vector<String> getNextRow(ResultSet rs,ResultSetMetaData rsmd) throws SQLException{
