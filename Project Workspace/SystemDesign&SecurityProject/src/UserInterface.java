@@ -60,7 +60,7 @@ public abstract class UserInterface {
 		main.repaint();
 		main.updateUI();
 	}
-	public void removeItem(JButton remmovebt, JTable table,String compName) {
+	public void removeItem(JButton remmovebt, JTable table,String compName,JPanel main,JFrame fr) {
 		remmovebt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

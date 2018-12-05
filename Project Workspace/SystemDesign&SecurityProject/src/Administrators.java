@@ -138,7 +138,7 @@ public class Administrators extends UserInterface{
 	
 	
 	//add account method
-	private void addAccount(JButton addAccounts) {
+	private void addAccount(JButton addAccounts,JPanel main,JFrame fr) {
 		addAccounts.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//new frame for adding account
@@ -208,6 +208,7 @@ public class Administrators extends UserInterface{
 									privilInt= 4;
 								db.insertAccount(accName,password,privilInt);
 								addAccount.dispose();
+								accounts(main,fr);
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
@@ -226,7 +227,7 @@ public class Administrators extends UserInterface{
 		});
 	}
 	//add account method
-	private void addDepartment(JButton addDepartments) {
+	private void addDepartment(JButton addDepartments,JPanel main,JFrame fr) {
 		addDepartments.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//new frame for adding department
@@ -273,6 +274,8 @@ public class Administrators extends UserInterface{
 								
 								db.insertDepa(depName, abbCode);
 								addDepartment.dispose();
+								departments(main,fr);
+
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
@@ -288,7 +291,7 @@ public class Administrators extends UserInterface{
 		    }
 		});
 	}
-	private void addDegree(JButton addDegree) {
+	private void addDegree(JButton addDegree,JPanel main,JFrame fr) {
 		addDegree.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//new frame for adding department
@@ -365,6 +368,7 @@ public class Administrators extends UserInterface{
 
 								db.insertDee(deeName,abbCode,entry1,level);
 								addDegree.dispose();
+								degrees(main,fr);
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
@@ -386,7 +390,7 @@ public class Administrators extends UserInterface{
 		    }
 		});
 	}
-	private void addModu(JButton addButton) {
+	private void addModu(JButton addButton,JPanel main,JFrame fr) {
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//new frame for adding department
@@ -455,6 +459,8 @@ public class Administrators extends UserInterface{
 
 								db.insertModule(modName, abbCode,cre,time);
 								addModule.dispose();
+								modules(main,fr);
+
 							} catch (Exception e1) {
 								// TODO Auto-generated catch block
 								e1.printStackTrace();
@@ -474,7 +480,7 @@ public class Administrators extends UserInterface{
 		    }
 		});
 	}
-	private void linkDegree(JButton remmovebt,JTable table) throws Exception {
+	private void linkDegree(JButton remmovebt,JTable table,JPanel main,JFrame fr) throws Exception {
 		remmovebt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -540,7 +546,13 @@ public class Administrators extends UserInterface{
 						}
 						System.out.println("Success");
 						linkDegree.dispose();
-							
+						try {
+							degrees(main,fr);
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+
 							
 					}
 				});
@@ -563,7 +575,7 @@ public class Administrators extends UserInterface{
 			});
 		
 	}
-	private void linkMod(JButton remmovebt,JTable table) throws Exception {
+	private void linkMod(JButton remmovebt,JTable table,JPanel main,JFrame fr) throws Exception {
 		remmovebt.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -628,6 +640,13 @@ public class Administrators extends UserInterface{
 						}
 						System.out.println("Success");
 						linkMod.dispose();
+						try {
+							modules(main,fr);
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+
 									
 					}
 				});
@@ -661,8 +680,8 @@ public class Administrators extends UserInterface{
 		removeAccounts.setBounds(250,738, 200, 50);
 		//event listener
 		String itemName = "Login_Details";
-		addAccount(addAccounts);
-		removeItem(removeAccounts,table, itemName);
+		addAccount(addAccounts,main,frame);
+		removeItem(removeAccounts,table, itemName,main,frame);
 
 		
 		main.setBounds(343,146, 1577, 788);
@@ -686,8 +705,8 @@ public class Administrators extends UserInterface{
 		removeDepartments.setBounds(250,738, 200, 50);
 		String itemName = "Department";
 
-		addDepartment(addDepartmentsB);
-		removeItem(removeDepartments,table, itemName);
+		addDepartment(addDepartmentsB,main,frame);
+		removeItem(removeDepartments,table, itemName,main,frame);
 
 		main.setBounds(343,146, 1577, 788);
 		main.setVisible(true); 
@@ -713,10 +732,10 @@ public class Administrators extends UserInterface{
 		removeDegrees.setBounds(250,738, 200, 50);
 		linkDegrees.setBounds(500,738, 200, 50);
 		
-		linkDegree(linkDegrees,table);
-		addDegree(addDegrees);
+		linkDegree(linkDegrees,table,main,frame);
+		addDegree(addDegrees,main,frame);
 		String itemName = "Degree";
-		removeItem(removeDegrees,table, itemName);
+		removeItem(removeDegrees,table, itemName,main,frame);
 
 		main.setBounds(343,146, 1577, 788);
 		main.setVisible(true); 
@@ -742,10 +761,10 @@ public class Administrators extends UserInterface{
 		removeMod.setBounds(250,738, 200, 50);
 		linkMod.setBounds(500,738, 200, 50);
 		
-		linkMod(linkMod,table);
-		addModu(addMod);
+		linkMod(linkMod,table,main,frame);
+		addModu(addMod,main,frame);
 		String itemName = "Module";
-		removeItem(removeMod,table, itemName);
+		removeItem(removeMod,table, itemName,main,frame);
 		
 		main.setBounds(343,146, 1577, 788);
 		main.setVisible(true); 

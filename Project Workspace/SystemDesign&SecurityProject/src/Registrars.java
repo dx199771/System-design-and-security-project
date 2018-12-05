@@ -120,9 +120,9 @@ public class Registrars extends UserInterface{
 		registerStudent(regStudent,table);
 		String itemName = "Student";
 
-		addStudent(addStudents);
-		optionalModule(optional,table);
-		removeItem(removeStudent,table,itemName);
+		addStudent(addStudents,main,frame);
+		optionalModule(optional,table,main,frame);
+		removeItem(removeStudent,table,itemName,main,frame);
 		
 		main.setBounds(343,146, 1577, 788);
 		main.setVisible(true); 
@@ -134,7 +134,7 @@ public class Registrars extends UserInterface{
 		main.add(jsp);
 		
 	}
-	public void optionalModule(JButton button,JTable table) {
+	public void optionalModule(JButton button,JTable table,JPanel main,JFrame fr) {
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int selected = table.getSelectedRow();
@@ -225,7 +225,7 @@ public class Registrars extends UserInterface{
 		});
 		
 	}
-	private void addStudent(JButton addStudents) throws Exception {
+	private void addStudent(JButton addStudents,JPanel main,JFrame fr) throws Exception {
 		addStudents.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -338,7 +338,12 @@ public class Registrars extends UserInterface{
 							    db.insertStudent(tit,sName,fName,emai,tuto,accout,dee);
 								System.out.println("Success");
 								addStudent.dispose();
-
+								try {
+									students(main,fr);
+								} catch (Exception e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
 
 							
 					}
@@ -347,6 +352,7 @@ public class Registrars extends UserInterface{
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						addStudent.dispose();
+
 					}
 				});
 				
